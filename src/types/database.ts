@@ -1,0 +1,306 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
+
+type BaseInsert = {
+  id?: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+type BaseUpdate = {
+  id?: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type Database = {
+  public: {
+    Tables: {
+      admin_profiles: {
+        Row: {
+          id: string;
+          user_id: string;
+          email: string;
+          display_name: string | null;
+          role: Database["public"]["Enums"]["user_role"];
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: BaseInsert & {
+          user_id: string;
+          email: string;
+          display_name?: string | null;
+          role?: Database["public"]["Enums"]["user_role"];
+          is_active?: boolean;
+        };
+        Update: BaseUpdate & {
+          user_id?: string;
+          email?: string;
+          display_name?: string | null;
+          role?: Database["public"]["Enums"]["user_role"];
+          is_active?: boolean;
+        };
+        Relationships: [];
+      };
+      site_settings: {
+        Row: {
+          id: number;
+          display_name: string;
+          headline: string;
+          description: string;
+          avatar_url: string | null;
+          background_image_url: string | null;
+          theme: Json;
+          social_links: Json;
+          is_public: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: number;
+          display_name?: string;
+          headline?: string;
+          description?: string;
+          avatar_url?: string | null;
+          background_image_url?: string | null;
+          theme?: Json;
+          social_links?: Json;
+          is_public?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["site_settings"]["Insert"]>;
+        Relationships: [];
+      };
+      pages: {
+        Row: {
+          id: string;
+          title: string;
+          slug: string;
+          status: Database["public"]["Enums"]["page_status"];
+          seo_title: string | null;
+          seo_description: string | null;
+          published_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: BaseInsert & {
+          title: string;
+          slug: string;
+          status?: Database["public"]["Enums"]["page_status"];
+          seo_title?: string | null;
+          seo_description?: string | null;
+          published_at?: string | null;
+        };
+        Update: BaseUpdate & Partial<Omit<Database["public"]["Tables"]["pages"]["Insert"], "id">>;
+        Relationships: [];
+      };
+      page_blocks: {
+        Row: {
+          id: string;
+          page_id: string;
+          type: Database["public"]["Enums"]["block_type"];
+          name: string;
+          content: Json;
+          styles: Json;
+          position: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: BaseInsert & {
+          page_id: string;
+          type: Database["public"]["Enums"]["block_type"];
+          name: string;
+          content?: Json;
+          styles?: Json;
+          position?: number;
+          is_active?: boolean;
+        };
+        Update: BaseUpdate & Partial<Omit<Database["public"]["Tables"]["page_blocks"]["Insert"], "id">>;
+        Relationships: [];
+      };
+      notes: {
+        Row: {
+          id: string;
+          title: string;
+          slug: string;
+          excerpt: string;
+          status: Database["public"]["Enums"]["note_status"];
+          is_pinned: boolean;
+          parent_id: string | null;
+          current_version_id: string | null;
+          published_version_id: string | null;
+          cover_media_id: string | null;
+          seo_title: string | null;
+          seo_description: string | null;
+          reading_time_minutes: number;
+          published_at: string | null;
+          deleted_at: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: BaseInsert & {
+          title: string;
+          slug: string;
+          excerpt?: string;
+          status?: Database["public"]["Enums"]["note_status"];
+          is_pinned?: boolean;
+          parent_id?: string | null;
+          current_version_id?: string | null;
+          published_version_id?: string | null;
+          cover_media_id?: string | null;
+          seo_title?: string | null;
+          seo_description?: string | null;
+          reading_time_minutes?: number;
+          published_at?: string | null;
+          deleted_at?: string | null;
+          created_by?: string | null;
+        };
+        Update: BaseUpdate & Partial<Omit<Database["public"]["Tables"]["notes"]["Insert"], "id">>;
+        Relationships: [];
+      };
+      note_versions: {
+        Row: {
+          id: string;
+          note_id: string;
+          version_number: number;
+          title: string;
+          content: Json;
+          plain_text: string;
+          change_summary: string | null;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          note_id: string;
+          version_number: number;
+          title: string;
+          content?: Json;
+          plain_text?: string;
+          change_summary?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["note_versions"]["Insert"]>;
+        Relationships: [];
+      };
+      categories: {
+        Row: {
+          id: string;
+          name: string;
+          slug: string;
+          description: string | null;
+          color: string;
+          parent_id: string | null;
+          position: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: BaseInsert & {
+          name: string;
+          slug: string;
+          description?: string | null;
+          color?: string;
+          parent_id?: string | null;
+          position?: number;
+          is_active?: boolean;
+        };
+        Update: BaseUpdate & Partial<Omit<Database["public"]["Tables"]["categories"]["Insert"], "id">>;
+        Relationships: [];
+      };
+      note_categories: {
+        Row: { note_id: string; category_id: string; created_at: string };
+        Insert: { note_id: string; category_id: string; created_at?: string };
+        Update: { note_id?: string; category_id?: string; created_at?: string };
+        Relationships: [];
+      };
+      media_files: {
+        Row: {
+          id: string;
+          object_key: string;
+          original_name: string;
+          mime_type: string;
+          size_bytes: number;
+          width: number | null;
+          height: number | null;
+          alt_text: string | null;
+          visibility: Database["public"]["Enums"]["media_visibility"];
+          public_url: string | null;
+          uploaded_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: BaseInsert & {
+          object_key: string;
+          original_name: string;
+          mime_type: string;
+          size_bytes: number;
+          width?: number | null;
+          height?: number | null;
+          alt_text?: string | null;
+          visibility?: Database["public"]["Enums"]["media_visibility"];
+          public_url?: string | null;
+          uploaded_by?: string | null;
+        };
+        Update: BaseUpdate & Partial<Omit<Database["public"]["Tables"]["media_files"]["Insert"], "id">>;
+        Relationships: [];
+      };
+      audit_logs: {
+        Row: {
+          id: string;
+          actor_id: string | null;
+          action: string;
+          entity_type: string;
+          entity_id: string | null;
+          metadata: Json;
+          ip_address: unknown | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          actor_id?: string | null;
+          action: string;
+          entity_type: string;
+          entity_id?: string | null;
+          metadata?: Json;
+          ip_address?: unknown | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["audit_logs"]["Insert"]>;
+        Relationships: [];
+      };
+    };
+    Views: { [_ in never]: never };
+    Functions: {
+      is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
+    };
+    Enums: {
+      user_role: "ADMIN";
+      page_status: "DRAFT" | "PUBLISHED";
+      note_status: "DRAFT" | "PRIVATE" | "PUBLIC" | "ARCHIVED";
+      block_type:
+        | "TEXT"
+        | "HEADING"
+        | "BUTTON"
+        | "IMAGE"
+        | "BANNER"
+        | "VIDEO"
+        | "CARD"
+        | "DIVIDER"
+        | "NOTE_LIST"
+        | "SOCIAL_LINKS";
+      media_visibility: "PUBLIC" | "PRIVATE";
+    };
+    CompositeTypes: { [_ in never]: never };
+  };
+};

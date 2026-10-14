@@ -1,0 +1,2 @@
+import { CollectionPlaceholder } from "@/components/admin/collection-placeholder";
+export default async function EditNotePage({ params }: { params: Promise<{ id: string }> }) { const { id } = await params; return <CollectionPlaceholder title="Chỉnh sửa ghi chú" description={`Editor cho ghi chú ${id}; mỗi lần lưu sẽ tạo version mới.`} features={["Autosave có kiểm soát", "Preview bản nháp", "Media picker", "Xuất bản version được chọn"]} />; }

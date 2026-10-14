@@ -1,0 +1,2 @@
+import { CollectionPlaceholder } from "@/components/admin/collection-placeholder";
+export default async function NoteHistoryPage({ params }: { params: Promise<{ id: string }> }) { const { id } = await params; return <CollectionPlaceholder title="Lịch sử phiên bản" description={`Danh sách version bất biến của ghi chú ${id}.`} features={["Xem nội dung từng version", "So sánh thay đổi", "Khôi phục thành version mới", "Theo dõi người chỉnh sửa"]} />; }

@@ -1,0 +1,2 @@
+import { CollectionPlaceholder } from "@/components/admin/collection-placeholder";
+export default async function AdminPageEditor({ params }: { params: Promise<{ id: string }> }) { const { id } = await params; return <CollectionPlaceholder title="Trình chỉnh sửa trang" description={`Đang chuẩn bị editor cho trang ${id}.`} features={["Danh sách block có thứ tự", "Form cấu hình theo loại", "Preview responsive", "Publish theo transaction"]} />; }

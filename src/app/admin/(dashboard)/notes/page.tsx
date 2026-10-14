@@ -1,0 +1,2 @@
+import { CollectionPlaceholder } from "@/components/admin/collection-placeholder";
+export default function AdminNotesPage() { return <CollectionPlaceholder title="Quản lý ghi chú" description="Tạo, lọc, xuất bản, nhân bản và đưa ghi chú vào thùng rác." createHref="/admin/notes/new" createLabel="Tạo ghi chú" features={["Draft / Private / Public", "Tìm kiếm và lọc", "Ghim và nhân bản", "Thùng rác có phục hồi"]} />; }
