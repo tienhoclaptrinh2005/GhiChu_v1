@@ -11,7 +11,9 @@
 - [ ] Route nhận ID kiểm tra quyền với chính tài nguyên đó để tránh IDOR.
 - [ ] Rich text chỉ render từ cấu trúc Tiptap cho phép; không dùng HTML chưa sanitize.
 - [ ] File private dùng object key khó đoán và signed URL có TTL ngắn.
-- [ ] Kiểm tra MIME type, magic bytes, dung lượng và phần mở rộng khi upload.
+- [ ] Ảnh chỉ được cấp signed upload khi đã thành WebP; server kiểm tra MIME, magic bytes, dung lượng, kích thước pixel và metadata phiên upload.
+- [ ] Bucket R2 là private; CORS chỉ cho phép đúng origin production và các header upload cần thiết.
+- [ ] Có lifecycle rule xóa object trong các prefix `*/pending/` sau 1 ngày.
 - [ ] Bật rate limit cho login, upload, search và action nhạy cảm.
 - [ ] Header `noindex` áp dụng cho Admin và nội dung private.
 - [ ] Log không chứa token, password, service key hoặc signed URL còn hiệu lực.

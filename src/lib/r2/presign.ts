@@ -4,47 +4,82 @@ import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import { getR2Env } from "@/lib/env";
+import {
+  PDF_MIME_TYPE,
+  WEBP_MIME_TYPE,
+  getUploadLimitBytes,
+  mediaProfiles,
+  type MediaFolder,
+} from "@/lib/media/config";
 import { getR2Client } from "@/lib/r2/client";
 
-const allowedMimeTypes = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/avif",
-  "application/pdf",
-]);
+function objectExtension(contentType: string) {
+  return contentType === PDF_MIME_TYPE ? "pdf" : "webp";
+}
 
-export function createObjectKey(originalName: string, folder = "uploads") {
-  const extension = originalName.split(".").pop()?.toLowerCase() || "bin";
-  const safeFolder = folder.replace(/[^a-z0-9/-]/gi, "-");
-  return `${safeFolder}/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${extension}`;
+export function createStagingObjectKey(input: {
+  mediaId: string;
+  folder: MediaFolder;
+  contentType: string;
+}) {
+  return `${input.folder}/pending/${new Date().toISOString().slice(0, 10)}/${input.mediaId}.${objectExtension(input.contentType)}`;
+}
+
+export function createFinalObjectKey(input: {
+  mediaId: string;
+  folder: MediaFolder;
+  contentType: string;
+}) {
+  return `${input.folder}/ready/${new Date().toISOString().slice(0, 10)}/${input.mediaId}.${objectExtension(input.contentType)}`;
 }
 
 export async function createSignedUploadUrl(input: {
+  mediaId: string;
   objectKey: string;
+  folder: MediaFolder;
   contentType: string;
   sizeBytes: number;
 }) {
   const env = getR2Env();
-  const maxBytes = env.UPLOAD_MAX_FILE_SIZE_MB * 1024 * 1024;
+  const profile = mediaProfiles[input.folder];
+  const maxBytes = getUploadLimitBytes(input.folder, env.UPLOAD_MAX_FILE_SIZE_MB);
+  const isAllowedImage = input.contentType === WEBP_MIME_TYPE;
+  const isAllowedPdf = input.contentType === PDF_MIME_TYPE && profile.acceptsPdf;
 
-  if (!allowedMimeTypes.has(input.contentType)) {
-    throw new Error("Định dạng file không được hỗ trợ.");
+  if (!isAllowedImage && !isAllowedPdf) {
+    throw new Error("Ảnh phải được chuyển sang WebP trước khi upload.");
   }
   if (input.sizeBytes <= 0 || input.sizeBytes > maxBytes) {
-    throw new Error(`File vượt giới hạn ${env.UPLOAD_MAX_FILE_SIZE_MB} MB.`);
+    throw new Error(`File vượt giới hạn ${Math.floor(maxBytes / 1024 / 1024)} MB của mục này.`);
   }
 
-  return getSignedUrl(
+  const cacheControl = "private, max-age=0, no-store";
+  const uploadUrl = await getSignedUrl(
     getR2Client(),
     new PutObjectCommand({
       Bucket: env.R2_BUCKET_NAME,
       Key: input.objectKey,
       ContentType: input.contentType,
       ContentLength: input.sizeBytes,
+      CacheControl: cacheControl,
+      Metadata: { "media-id": input.mediaId },
     }),
-    { expiresIn: env.R2_SIGNED_URL_TTL_SECONDS },
+    {
+      expiresIn: env.R2_SIGNED_URL_TTL_SECONDS,
+      signableHeaders: new Set(["content-type", "cache-control"]),
+      unhoistableHeaders: new Set(["x-amz-meta-media-id"]),
+    },
   );
+
+  return {
+    uploadUrl,
+    expiresIn: env.R2_SIGNED_URL_TTL_SECONDS,
+    requiredHeaders: {
+      "Content-Type": input.contentType,
+      "Cache-Control": cacheControl,
+      "x-amz-meta-media-id": input.mediaId,
+    },
+  };
 }
 
 export async function createSignedDownloadUrl(objectKey: string) {

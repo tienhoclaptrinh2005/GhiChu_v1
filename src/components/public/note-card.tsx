@@ -7,7 +7,8 @@ import type { NoteSummary } from "@/types/domain";
 
 export function NoteCard({ note, compact = false }: { note: NoteSummary; compact?: boolean }) {
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 transition duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-950/8">
+    <article className="group relative flex h-full min-h-64 flex-col overflow-hidden rounded-lg border-2 border-line bg-surface p-5 shadow-[5px_5px_0_var(--ds-shadow)] transition-[transform,box-shadow,background-color] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-surface-alt hover:shadow-[7px_7px_0_var(--ds-shadow)]">
+      <span className="absolute right-0 top-0 size-5 border-b-2 border-l-2 border-line bg-accent" aria-hidden="true" />
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex flex-wrap gap-1.5">
           {note.categories.slice(0, 2).map((category) => (
@@ -18,25 +19,25 @@ export function NoteCard({ note, compact = false }: { note: NoteSummary; compact
           {note.categories.length === 0 && <Badge>Ghi chú</Badge>}
         </div>
         {note.isPinned && (
-          <span title="Đã ghim" className="text-amber-500">
+          <span title="Đã ghim" className="text-danger">
             <Pin className="size-4 fill-current" aria-hidden="true" />
           </span>
         )}
       </div>
-      <h2 className="text-lg font-bold leading-snug tracking-tight text-slate-950 group-hover:text-indigo-700">
+      <h2 className="text-lg font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest">
         <Link href={`/notes/${note.slug}`} className="after:absolute after:inset-0">
           {note.title}
         </Link>
       </h2>
       {!compact && (
-        <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">{note.excerpt}</p>
+        <p className="mt-2 line-clamp-3 text-sm leading-6 text-muted">{note.excerpt}</p>
       )}
-      <div className="mt-auto flex items-center justify-between gap-3 pt-5 text-xs font-medium text-slate-400">
+      <div className="mt-auto flex items-center justify-between gap-3 border-t-2 border-dashed border-line/30 pt-4 text-xs font-semibold text-muted">
         <span>{formatDate(note.publishedAt)}</span>
         <span className="flex items-center gap-1.5">
           <Clock3 className="size-3.5" aria-hidden="true" />
           {note.readingTimeMinutes} phút
-          <ArrowUpRight className="ml-1 size-3.5 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          <ArrowUpRight className="ml-1 size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </span>
       </div>
     </article>

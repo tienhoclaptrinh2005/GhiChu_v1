@@ -43,33 +43,13 @@ on conflict (slug) do nothing;
 insert into public.page_blocks (id, page_id, type, name, content, styles, position, is_active)
 values
   (
-    '20000000-0000-4000-8000-000000000001',
-    '10000000-0000-4000-8000-000000000001',
-    'BANNER',
-    'Thông báo nổi bật',
-    '{"eyebrow":"Bắt đầu tại đây","title":"Kho ghi chú đang được cập nhật mỗi tuần","description":"Tổng hợp hướng dẫn ngắn gọn, ví dụ thực tế và những tài nguyên đã được chọn lọc.","href":"/notes","actionLabel":"Khám phá ghi chú"}'::jsonb,
-    '{"tone":"indigo"}'::jsonb,
-    0,
-    true
-  ),
-  (
     '20000000-0000-4000-8000-000000000002',
     '10000000-0000-4000-8000-000000000001',
     'BUTTON',
     'Liên kết nhanh',
-    '{"layout":"grid","items":[{"title":"Nhóm cộng đồng","description":"Trao đổi và cập nhật tài nguyên mới","href":"https://telegram.org","icon":"message-circle","external":true},{"title":"Tất cả ghi chú","description":"Duyệt theo chủ đề hoặc tìm kiếm","href":"/notes","icon":"notebook-tabs","external":false},{"title":"Danh mục","description":"Đi thẳng đến chủ đề bạn quan tâm","href":"/categories","icon":"folder-tree","external":false}]}'::jsonb,
+    '{"layout":"stack","items":[{"title":"Nhóm cộng đồng","description":"Trao đổi và cập nhật tài nguyên mới","href":"https://telegram.org","icon":"message-circle","tone":"blue","external":true},{"title":"Tất cả ghi chú","description":"Duyệt theo chủ đề hoặc tìm kiếm","href":"/notes","icon":"notebook-tabs","tone":"violet","external":false},{"title":"Danh mục","description":"Đi thẳng đến chủ đề bạn quan tâm","href":"/categories","icon":"folder-tree","tone":"orange","external":false},{"title":"Tìm kiếm","description":"Tìm nhanh một ghi chú hoặc từ khóa","href":"/search","icon":"search","tone":"rose","external":false}]}'::jsonb,
     '{}'::jsonb,
-    1,
-    true
-  ),
-  (
-    '20000000-0000-4000-8000-000000000003',
-    '10000000-0000-4000-8000-000000000001',
-    'CARD',
-    'Lời nhắn',
-    '{"icon":"sparkles","title":"Nội dung ngắn, đủ ý và có thể áp dụng","text":"Mỗi ghi chú tập trung vào một vấn đề cụ thể. Nếu có phần chưa rõ, bạn có thể dùng các kênh liên hệ ở cuối trang."}'::jsonb,
-    '{"tone":"mint"}'::jsonb,
-    2,
+    0,
     true
   ),
   (
@@ -79,7 +59,7 @@ values
     'Ghi chú nổi bật',
     '{"title":"Ghi chú nổi bật","description":"Một vài bài được ghim để bạn bắt đầu nhanh.","limit":3}'::jsonb,
     '{}'::jsonb,
-    3,
+    1,
     true
   )
 on conflict (id) do nothing;

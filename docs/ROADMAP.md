@@ -4,7 +4,7 @@
 
 - Kết nối Supabase thật và tạo Admin duy nhất.
 - Áp dụng migration/RLS, kiểm thử phân quyền.
-- Hoàn thiện cấu hình R2 và upload có kiểm tra file.
+- [x] Hoàn thiện pipeline R2: WebP trước upload, signed URL, xác minh file và thư viện Media.
 - Thay dữ liệu demo bằng dữ liệu thật.
 
 ## Giai đoạn 2 — Trang chủ động

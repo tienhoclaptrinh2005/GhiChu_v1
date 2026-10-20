@@ -1,2 +1,28 @@
-import { CollectionPlaceholder } from "@/components/admin/collection-placeholder";
-export default function AdminMediaPage() { return <CollectionPlaceholder title="Thư viện media" description="Metadata nằm trong PostgreSQL; object được lưu an toàn trên Cloudflare R2." features={["Upload bằng signed URL", "Kiểm tra MIME và dung lượng", "Public / Private", "Phát hiện file không còn dùng"]} />; }
+import { MediaLibrary } from "@/components/admin/media-library";
+import { MediaUploader } from "@/components/admin/media-uploader";
+import { PageHeader } from "@/components/admin/page-header";
+import { getAdminMediaFiles } from "@/features/admin/queries";
+
+export default async function AdminMediaPage() {
+  const media = await getAdminMediaFiles();
+
+  return (
+    <div className="space-y-8">
+      <PageHeader
+        title="Thư viện media"
+        description="Ảnh được resize và chuyển WebP trên trình duyệt; server chỉ mở khóa sau khi đã kiểm tra object thật trên Cloudflare R2."
+      />
+      <MediaUploader />
+      <section aria-labelledby="media-library-title" className="space-y-4">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h2 id="media-library-title" className="text-xl font-bold tracking-tight text-ink">File gần đây</h2>
+            <p className="mt-1 text-sm text-muted">Hiển thị tối đa 60 file chưa xóa.</p>
+          </div>
+          <span className="rounded-sm border-2 border-line bg-accent px-3 py-1 font-display text-xs font-bold text-[#231f20] shadow-[2px_2px_0_var(--ds-shadow)]">{media.length} file</span>
+        </div>
+        <MediaLibrary items={media} />
+      </section>
+    </div>
+  );
+}

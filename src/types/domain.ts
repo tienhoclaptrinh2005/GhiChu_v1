@@ -1,5 +1,7 @@
 export type NoteStatus = "DRAFT" | "PRIVATE" | "PUBLIC" | "ARCHIVED";
 export type PageStatus = "DRAFT" | "PUBLISHED";
+export type MediaStatus = "PENDING" | "READY" | "FAILED" | "DELETED";
+export type MediaVisibility = "PUBLIC" | "PRIVATE";
 export type BlockType =
   | "TEXT"
   | "HEADING"
@@ -97,4 +99,19 @@ export interface DashboardStats {
   draftNotes: number;
   activeBlocks: number;
   mediaFiles: number;
+}
+
+export interface MediaFileItem {
+  id: string;
+  originalName: string;
+  mimeType: string;
+  sizeBytes: number;
+  width: number | null;
+  height: number | null;
+  altText: string | null;
+  folder: string;
+  status: MediaStatus;
+  visibility: MediaVisibility;
+  failureReason: string | null;
+  createdAt: string;
 }

@@ -4,24 +4,25 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border-2 border-line text-sm font-bold shadow-[3px_3px_0_var(--ds-shadow)] transition-[transform,box-shadow,background-color,color] duration-150 outline-none hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_var(--ds-shadow)] active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0_var(--ds-shadow)] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none",
   {
     variants: {
       variant: {
         primary:
-          "bg-slate-950 text-white shadow-lg shadow-slate-950/15 hover:-translate-y-0.5 hover:bg-slate-800",
+          "bg-forest-deep text-[#fffdf5] hover:bg-forest hover:text-[var(--ds-on-forest)]",
         accent:
-          "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 hover:-translate-y-0.5 hover:bg-indigo-500",
+          "bg-accent text-[var(--ds-on-accent)] hover:bg-pink",
         outline:
-          "border border-slate-200 bg-white/80 text-slate-800 hover:border-slate-300 hover:bg-white",
-        ghost: "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
-        danger: "bg-rose-600 text-white hover:bg-rose-500",
+          "bg-surface text-ink hover:bg-surface-alt",
+        ghost:
+          "border-transparent bg-transparent text-muted shadow-none hover:border-line hover:bg-surface hover:text-ink hover:shadow-[3px_3px_0_var(--ds-shadow)]",
+        danger: "bg-danger text-surface hover:bg-pink hover:text-[var(--ds-on-accent)]",
       },
       size: {
-        sm: "h-9 px-3",
+        sm: "h-11 px-3",
         md: "h-11 px-4",
         lg: "h-12 px-5 text-base",
-        icon: "size-10",
+        icon: "size-11",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },

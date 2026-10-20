@@ -11,9 +11,9 @@ export default async function HomePage() {
   ]);
 
   return (
-    <main id="main-content" className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
+    <main id="main-content" className="mx-auto max-w-3xl px-4 py-7 sm:px-6 sm:py-12">
       <ProfileHero settings={settings} />
-      <div id="noi-dung" className="mx-auto mt-6 max-w-4xl space-y-6 scroll-mt-24 sm:mt-8">
+      <div id="noi-dung" className="mt-8 space-y-8 scroll-mt-24 sm:mt-10 sm:space-y-10">
         {blocks.map((block) => (
           <BlockRenderer key={block.id} block={block} notes={notes} />
         ))}

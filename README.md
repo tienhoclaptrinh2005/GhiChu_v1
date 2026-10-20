@@ -8,7 +8,8 @@ Bộ khung phát triển website cá nhân kết hợp trang liên kết, kho gh
 - Có khung dashboard Admin và đầy đủ route theo đặc tả.
 - Có luồng đăng nhập/đăng xuất Supabase và lớp bảo vệ route Admin phía server.
 - Có schema PostgreSQL, trigger, index và chính sách Row Level Security ban đầu.
-- Có lớp cấu hình Supabase và R2; không yêu cầu biến môi trường để chạy giao diện demo local.
+- Có pipeline media hoàn chỉnh: resize/chuyển WebP trước upload, signed URL, xác minh object thật và thư viện quản trị.
+- Có lớp cấu hình Supabase và R2; không yêu cầu biến môi trường để chạy giao diện public demo local.
 - Dữ liệu mẫu chỉ được dùng khi Supabase chưa được cấu hình.
 
 ## Bắt đầu nhanh
@@ -26,7 +27,7 @@ Mở `http://localhost:3000`. Trước khi kết nối dịch vụ thật, ứng
 ## Thiết lập Supabase
 
 1. Tạo một dự án Supabase và tắt đăng ký công khai trong Authentication.
-2. Chạy migration tại `supabase/migrations/202610150001_initial_schema.sql` bằng Supabase CLI hoặc SQL Editor.
+2. Chạy các migration trong `supabase/migrations/` theo thứ tự bằng Supabase CLI hoặc SQL Editor.
 3. Chạy `supabase/seed.sql` nếu muốn có dữ liệu khởi tạo.
 4. Tạo duy nhất một tài khoản trong Supabase Auth.
 5. Thêm tài khoản đó vào `public.admin_profiles` theo hướng dẫn trong `supabase/README.md`.
@@ -34,7 +35,9 @@ Mở `http://localhost:3000`. Trước khi kết nối dịch vụ thật, ứng
 
 ## Thiết lập Cloudflare R2
 
-Tạo bucket riêng, API token chỉ có quyền cần thiết và điền các biến `R2_*`. File public có thể dùng custom domain; file private phải được đọc qua URL ký tạm thời hoặc route server đã kiểm tra quyền.
+Tạo bucket **private**, API token chỉ có quyền cần thiết và điền các biến `R2_*`. Sau đó cấu hình CORS để trình duyệt PUT file trực tiếp qua signed URL. Không gắn public domain vào bucket chứa file private.
+
+Ảnh JPEG/PNG/WebP/AVIF được resize và chuyển thành WebP ngay trong trình duyệt trước khi upload. Server vẫn kiểm tra lại dung lượng, MIME, magic bytes và kích thước thật trên R2 trước khi đánh dấu file sẵn sàng. Xem cấu hình CORS, giới hạn và checklist tại [pipeline media](docs/MEDIA_PIPELINE.md).
 
 ## Lệnh thường dùng
 
@@ -64,7 +67,8 @@ src/
     ui/                   UI primitives dùng lại
   features/               Schema, action và truy vấn theo nghiệp vụ
   lib/
-    r2/                   Client và URL ký tạm thời Cloudflare R2
+    media/                Profile, chuyển WebP và đọc metadata ảnh
+    r2/                   Signed URL, xác minh và quản lý object Cloudflare R2
     supabase/             Client browser/server/admin
   types/                  Kiểu domain và database
 supabase/

@@ -1,49 +1,91 @@
-# dependencies
-/node_modules
-/.pnp
+# Dependencies and package-manager caches
+/node_modules/
+/.pnp/
 .pnp.*
+/.npm/
+/.pnpm-store/
+/.yarn/cache/
+/.yarn/unplugged/
+/.yarn/install-state.gz
 
-# Next.js
+# Next.js and production output
 /.next/
 /out/
+/build/
+/dist/
 
-# production
-/build
-/dist
-
-# local environment files
-.env
-.env.local
-.env.*.local
+# Environment files and local secrets
+.env*
 !.env.example
+.dev.vars*
+!.dev.vars.example
 
-# testing and coverage
-/coverage
-/playwright-report
-/test-results
+# Private credentials and certificates
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+credentials.json
+service-account*.json
+
+# Tests and coverage output
+/coverage/
+/.nyc_output/
+/playwright-report/
+/test-results/
+/blob-report/
+
+# Local database files and dumps
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.backup
 
 # Supabase local state
-/supabase/.branches
-/supabase/.temp
+/supabase/.branches/
+/supabase/.temp/
 
-# Vercel
-.vercel
+# Cloud deployment and local emulator state
+/.vercel/
+/.wrangler/
 
-# editors and OS
-.DS_Store
-Thumbs.db
-*.swp
-.idea/
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
+# Runtime uploads (curated assets elsewhere in public/ remain tracked)
+/uploads/
+/public/uploads/
 
-# logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+# Logs, caches, and temporary files
+*.log
+/logs/
+/.cache/
+/.turbo/
+/.tmp/
+/tmp/
+/temp/
+.eslintcache
 
-# TypeScript
+# TypeScript generated files
 *.tsbuildinfo
 next-env.d.ts
+
+# Editors
+/.idea/
+/.vscode/*
+!/.vscode/extensions.json
+!/.vscode/settings.json
+
+# Operating-system files
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.swp
+*~
+
+# Local AI-agent resources (AGENTS.md remains tracked)
+/.agent/
+/.agents/
+/.codex/

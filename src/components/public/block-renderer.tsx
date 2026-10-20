@@ -2,9 +2,14 @@ import {
   ArrowRight,
   ExternalLink,
   FolderTree,
+  Mail,
+  Megaphone,
   MessageCircle,
   NotebookTabs,
+  Search,
+  Send,
   Sparkles,
+  UsersRound,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -23,58 +28,112 @@ function number(value: JsonValue | undefined, fallback: number) {
 }
 
 function icon(name: string) {
-  const Icon =
-    name === "message-circle"
-      ? MessageCircle
-      : name === "folder-tree"
-        ? FolderTree
-        : name === "sparkles"
-          ? Sparkles
-          : NotebookTabs;
+  let Icon = NotebookTabs;
+  if (name === "message-circle") Icon = MessageCircle;
+  if (name === "folder-tree") Icon = FolderTree;
+  if (name === "search") Icon = Search;
+  if (name === "send") Icon = Send;
+  if (name === "mail") Icon = Mail;
+  if (name === "users") Icon = UsersRound;
+  if (name === "sparkles") Icon = Sparkles;
   return <Icon className="size-5" aria-hidden="true" />;
+}
+
+function linkIconTone(tone: string, index: number) {
+  if (tone === "blue") return "bg-sky text-[#17212c]";
+  if (tone === "orange" || tone === "amber") return "bg-accent text-[#231f20]";
+  if (tone === "rose" || tone === "pink") return "bg-pink text-[#231f20]";
+  if (tone === "green" || tone === "violet") {
+    return "bg-forest text-[var(--ds-on-forest)]";
+  }
+
+  const fallbackTones = [
+    "bg-sky text-[#17212c]",
+    "bg-accent text-[#231f20]",
+    "bg-pink text-[#231f20]",
+    "bg-forest text-[var(--ds-on-forest)]",
+  ];
+  return fallbackTones[index % fallbackTones.length];
+}
+
+function isWebUrl(href: string) {
+  return /^https?:\/\//i.test(href);
+}
+
+function isExternalScheme(href: string) {
+  return /^(https?:\/\/|mailto:|tel:)/i.test(href);
 }
 
 function LinkButtons({ block }: { block: PageBlock }) {
   const items = Array.isArray(block.content.items) ? block.content.items : [];
-  return (
-    <div className="grid gap-3 sm:grid-cols-2">
-      {items.map((item, index) => {
-        if (!item || typeof item !== "object" || Array.isArray(item)) return null;
-        const title = text(item.title, "Liên kết");
-        const href = text(item.href, "#");
-        const external = item.external === true;
-        const content = (
-          <>
-            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-700 transition group-hover:bg-indigo-600 group-hover:text-white">
-              {icon(text(item.icon))}
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block font-bold text-slate-950">{title}</span>
-              <span className="mt-1 block text-sm leading-5 text-slate-500">
-                {text(item.description)}
-              </span>
-            </span>
-            {external ? (
-              <ExternalLink className="size-4 text-slate-400" aria-hidden="true" />
-            ) : (
-              <ArrowRight className="size-4 text-slate-400 transition group-hover:translate-x-1" aria-hidden="true" />
-            )}
-          </>
-        );
-        const className =
-          "group flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-950/5";
+  if (items.length === 0) return null;
 
-        return external ? (
-          <a key={`${title}-${index}`} href={href} target="_blank" rel="noreferrer" className={className}>
-            {content}
-          </a>
-        ) : (
-          <Link key={`${title}-${index}`} href={href} className={className}>
-            {content}
-          </Link>
-        );
-      })}
-    </div>
+  return (
+    <section aria-labelledby={`links-${block.id}`}>
+      <div className="mb-5 text-center">
+        <p className="retro-label justify-center">Điểm đến nhanh</p>
+        <h2 id={`links-${block.id}`} className="mt-3 text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+          {block.name}
+        </h2>
+      </div>
+
+      <div className="grid gap-4">
+        {items.map((item, index) => {
+          if (!item || typeof item !== "object" || Array.isArray(item)) return null;
+          const title = text(item.title, "Liên kết");
+          const href = text(item.href, "#");
+          const external = item.external === true || isExternalScheme(href);
+          const description = text(item.description);
+          const content = (
+            <>
+              <span
+                className={cn(
+                  "grid size-12 shrink-0 place-items-center rounded-full border-2 border-line transition-transform duration-150 group-hover:-rotate-3 group-hover:scale-105",
+                  linkIconTone(text(item.tone), index),
+                )}
+              >
+                {icon(text(item.icon))}
+              </span>
+              <span className="min-w-0 text-center">
+                <span className="block font-display text-base font-bold text-ink sm:text-lg">
+                  {title}
+                </span>
+                {description ? (
+                  <span className="mt-1 block text-xs leading-5 text-muted sm:text-sm">
+                    {description}
+                  </span>
+                ) : null}
+              </span>
+              <span className="grid size-12 place-items-center text-muted">
+                {external ? (
+                  <ExternalLink className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+                ) : (
+                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                )}
+              </span>
+            </>
+          );
+          const className =
+            "group grid min-h-[5.5rem] grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-3 rounded-xl border-2 border-line bg-surface p-3 shadow-[5px_5px_0_var(--ds-shadow)] transition-[transform,box-shadow,background-color] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-surface-alt hover:shadow-[7px_7px_0_var(--ds-shadow)] sm:grid-cols-[3.5rem_minmax(0,1fr)_3.5rem] sm:p-4";
+
+          return external ? (
+            <a
+              key={`${title}-${index}`}
+              href={href}
+              target={isWebUrl(href) ? "_blank" : undefined}
+              rel={isWebUrl(href) ? "noreferrer" : undefined}
+              className={className}
+            >
+              {content}
+            </a>
+          ) : (
+            <Link key={`${title}-${index}`} href={href} className={className}>
+              {content}
+            </Link>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
@@ -82,26 +141,46 @@ export function BlockRenderer({ block, notes }: { block: PageBlock; notes: NoteS
   if (!block.isActive) return null;
 
   if (block.type === "BANNER") {
+    const href = text(block.content.href, "/notes");
+    const action = (
+      <>
+        {text(block.content.actionLabel, "Xem thêm")}
+        <ArrowRight className="size-4" aria-hidden="true" />
+      </>
+    );
+    const actionClassName = cn(buttonVariants({ variant: "primary", size: "md" }), "shrink-0");
+
     return (
-      <Card className="overflow-hidden border-indigo-100 bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-500 text-white">
-        <CardContent className="relative p-6 sm:p-8">
-          <div className="absolute -right-10 -top-14 size-40 rounded-full border-[24px] border-white/10" />
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-100">
-            {text(block.content.eyebrow)}
-          </p>
-          <h2 className="mt-3 max-w-xl text-2xl font-black tracking-tight sm:text-3xl">
-            {text(block.content.title, block.name)}
-          </h2>
-          <p className="mt-3 max-w-xl leading-7 text-indigo-50/85">
-            {text(block.content.description)}
-          </p>
-          <Link
-            href={text(block.content.href, "/notes")}
-            className={cn(buttonVariants({ variant: "outline", size: "md" }), "mt-6 border-white/30 bg-white text-indigo-700 hover:bg-indigo-50")}
-          >
-            {text(block.content.actionLabel, "Xem thêm")}
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </Link>
+      <Card className="pixel-corners overflow-hidden bg-accent text-[#231f20]">
+        <CardContent className="relative flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:p-6">
+          <span className="grid size-12 shrink-0 place-items-center rounded-md border-2 border-[#231f20] bg-pink shadow-[3px_3px_0_#231f20]">
+            <Megaphone className="size-5" aria-hidden="true" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="font-display text-[0.68rem] font-bold uppercase tracking-[0.18em]">
+              {text(block.content.eyebrow, "Thông báo")}
+            </p>
+            <h2 className="mt-1.5 text-xl font-bold tracking-tight sm:text-2xl">
+              {text(block.content.title, block.name)}
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-[#382b2b] sm:text-base">
+              {text(block.content.description)}
+            </p>
+          </div>
+          {isExternalScheme(href) ? (
+            <a
+              href={href}
+              target={isWebUrl(href) ? "_blank" : undefined}
+              rel={isWebUrl(href) ? "noreferrer" : undefined}
+              className={actionClassName}
+            >
+              {action}
+            </a>
+          ) : (
+            <Link href={href} className={actionClassName}>
+              {action}
+            </Link>
+          )}
         </CardContent>
       </Card>
     );
@@ -111,16 +190,16 @@ export function BlockRenderer({ block, notes }: { block: PageBlock; notes: NoteS
 
   if (block.type === "CARD") {
     return (
-      <Card className="border-emerald-100 bg-gradient-to-br from-emerald-50/90 to-teal-50/70">
+      <Card className="bg-surface-alt">
         <CardContent className="flex gap-4">
-          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-600/20">
+          <span className="grid size-12 shrink-0 place-items-center rounded-md border-2 border-line bg-forest text-[var(--ds-on-forest)] shadow-[3px_3px_0_var(--ds-shadow)]">
             {icon(text(block.content.icon, "sparkles"))}
           </span>
           <div>
-            <h2 className="text-lg font-bold text-slate-950">
+            <h2 className="text-lg font-bold text-ink">
               {text(block.content.title, block.name)}
             </h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">{text(block.content.text)}</p>
+            <p className="mt-2 text-sm leading-6 text-muted">{text(block.content.text)}</p>
           </div>
         </CardContent>
       </Card>
@@ -133,31 +212,31 @@ export function BlockRenderer({ block, notes }: { block: PageBlock; notes: NoteS
       <section>
         <div className="mb-5 flex items-end justify-between gap-5">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">Đọc tiếp</p>
-            <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
+            <p className="retro-label">Đọc tiếp</p>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-ink sm:text-3xl">
               {text(block.content.title, block.name)}
             </h2>
-            <p className="mt-1 text-sm text-slate-500">{text(block.content.description)}</p>
+            <p className="mt-1 text-sm text-muted">{text(block.content.description)}</p>
           </div>
-          <Link href="/notes" className="hidden text-sm font-bold text-indigo-600 hover:text-indigo-500 sm:block">
+          <Link href="/notes" className="hidden border-b-2 border-line pb-1 text-sm font-bold text-forest transition-colors hover:text-pink sm:block">
             Xem tất cả →
           </Link>
         </div>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2">
           {notes.slice(0, limit).map((note) => <NoteCard key={note.id} note={note} />)}
         </div>
       </section>
     );
   }
 
-  if (block.type === "DIVIDER") return <hr className="border-slate-200" />;
+  if (block.type === "DIVIDER") return <hr className="section-rule" />;
 
   if (block.type === "HEADING") {
-    return <h2 className="text-2xl font-black tracking-tight text-slate-950">{text(block.content.text, block.name)}</h2>;
+    return <h2 className="text-2xl font-bold tracking-tight text-ink">{text(block.content.text, block.name)}</h2>;
   }
 
   if (block.type === "TEXT") {
-    return <p className="text-base leading-7 text-slate-600">{text(block.content.text)}</p>;
+    return <p className="text-base leading-7 text-muted">{text(block.content.text)}</p>;
   }
 
   return null;

@@ -28,6 +28,10 @@ Route public chỉ dùng anon key và được giới hạn bởi RLS. Chỉ pag
 
 `pages` đại diện cho một trang; `page_blocks` chứa block có kiểu, nội dung JSON, style JSON, trạng thái và vị trí. Renderer public chỉ hỗ trợ danh sách block đã định nghĩa, không thực thi CSS/JavaScript tùy ý.
 
+## Vòng đời media
+
+Ảnh được resize và mã hóa WebP ở client, sau đó upload thẳng tới prefix R2 `pending` bằng signed URL. Server đọc lại object để kiểm tra metadata, dung lượng, MIME, magic bytes và kích thước; object hợp lệ được copy sang `ready`, kiểm tra lần hai rồi mới cập nhật PostgreSQL sang `READY`. Route đọc chỉ phục vụ file `READY` và áp dụng điều kiện `PUBLIC` hoặc quyền Admin tương ứng.
+
 ## Quy ước module
 
 - `app`: routing và composition, không chứa logic truy cập dữ liệu dài.

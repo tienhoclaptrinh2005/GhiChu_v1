@@ -7,22 +7,22 @@ export function CategoryCard({ category }: { category: CategorySummary }) {
   return (
     <Link
       href={`/categories/${category.slug}`}
-      className="group rounded-2xl border border-slate-200/80 bg-white p-5 transition hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl hover:shadow-slate-950/5"
+      className="group relative rounded-lg border-2 border-line bg-surface p-5 shadow-[5px_5px_0_var(--ds-shadow)] transition-[transform,box-shadow,background-color] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-surface-alt hover:shadow-[7px_7px_0_var(--ds-shadow)]"
     >
       <div
-        className="mb-5 grid size-11 place-items-center rounded-xl text-white shadow-lg"
+        className="mb-5 grid size-12 place-items-center rounded-md border-2 border-line text-white shadow-[3px_3px_0_var(--ds-shadow)]"
         style={{ backgroundColor: category.color }}
       >
         <Files className="size-5" aria-hidden="true" />
       </div>
-      <h2 className="flex items-center justify-between gap-3 text-lg font-bold text-slate-950">
+      <h2 className="flex items-center justify-between gap-3 text-lg font-bold text-ink">
         {category.name}
-        <ArrowRight className="size-4 transition group-hover:translate-x-1" />
+        <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
       </h2>
-      <p className="mt-2 min-h-12 text-sm leading-6 text-slate-600">
+      <p className="mt-2 min-h-12 text-sm leading-6 text-muted">
         {category.description || "Các ghi chú được sắp xếp theo chủ đề này."}
       </p>
-      <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+      <p className="mt-4 border-t-2 border-dashed border-line/30 pt-3 font-display text-xs font-bold uppercase tracking-[0.12em] text-muted">
         {category.noteCount} ghi chú
       </p>
     </Link>

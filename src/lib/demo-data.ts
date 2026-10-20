@@ -202,27 +202,11 @@ export const demoNoteDetails: Record<string, NoteDetail> = Object.fromEntries(
 
 export const demoHomeBlocks: PageBlock[] = [
   {
-    id: "block-banner",
-    type: "BANNER",
-    name: "Thông báo nổi bật",
-    content: {
-      eyebrow: "Bắt đầu tại đây",
-      title: "Kho ghi chú đang được cập nhật mỗi tuần",
-      description:
-        "Tổng hợp hướng dẫn ngắn gọn, ví dụ thực tế và những tài nguyên đã được chọn lọc.",
-      href: "/notes",
-      actionLabel: "Khám phá ghi chú",
-    },
-    styles: { tone: "indigo" },
-    position: 0,
-    isActive: true,
-  },
-  {
     id: "block-links",
     type: "BUTTON",
     name: "Liên kết nhanh",
     content: {
-      layout: "grid",
+      layout: "stack",
       items: [
         {
           title: "Nhóm cộng đồng",
@@ -248,23 +232,18 @@ export const demoHomeBlocks: PageBlock[] = [
           tone: "orange",
           external: false,
         },
+        {
+          title: "Tìm kiếm",
+          description: "Tìm nhanh một ghi chú hoặc từ khóa",
+          href: "/search",
+          icon: "search",
+          tone: "rose",
+          external: false,
+        },
       ],
     },
     styles: {},
-    position: 1,
-    isActive: true,
-  },
-  {
-    id: "block-card",
-    type: "CARD",
-    name: "Lời nhắn",
-    content: {
-      icon: "sparkles",
-      title: "Nội dung ngắn, đủ ý và có thể áp dụng",
-      text: "Mỗi ghi chú tập trung vào một vấn đề cụ thể. Nếu có phần chưa rõ, bạn có thể dùng các kênh liên hệ ở cuối trang.",
-    },
-    styles: { tone: "mint" },
-    position: 2,
+    position: 0,
     isActive: true,
   },
   {
@@ -277,7 +256,7 @@ export const demoHomeBlocks: PageBlock[] = [
       limit: 3,
     },
     styles: {},
-    position: 3,
+    position: 1,
     isActive: true,
   },
 ];

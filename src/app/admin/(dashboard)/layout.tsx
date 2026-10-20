@@ -10,11 +10,11 @@ export const metadata: Metadata = { title: "Dashboard", robots: { index: false, 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, profile } = await requireAdmin();
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-canvas">
       <AdminSidebar />
       <div className="min-w-0 flex-1">
         <AdminHeader displayName={profile.display_name} email={user.email ?? profile.email} />
-        <main id="main-content" className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">{children}</main>
+        <main id="main-content" className="mx-auto max-w-7xl p-4 pb-28 sm:p-6 sm:pb-28 lg:p-8">{children}</main>
       </div>
     </div>
   );

@@ -234,8 +234,15 @@ export type Database = {
           width: number | null;
           height: number | null;
           alt_text: string | null;
+          folder: string;
+          status: Database["public"]["Enums"]["media_status"];
           visibility: Database["public"]["Enums"]["media_visibility"];
+          requested_visibility: Database["public"]["Enums"]["media_visibility"];
           public_url: string | null;
+          failure_reason: string | null;
+          expires_at: string | null;
+          verified_at: string | null;
+          deleted_at: string | null;
           uploaded_by: string | null;
           created_at: string;
           updated_at: string;
@@ -248,8 +255,15 @@ export type Database = {
           width?: number | null;
           height?: number | null;
           alt_text?: string | null;
+          folder?: string;
+          status?: Database["public"]["Enums"]["media_status"];
           visibility?: Database["public"]["Enums"]["media_visibility"];
+          requested_visibility?: Database["public"]["Enums"]["media_visibility"];
           public_url?: string | null;
+          failure_reason?: string | null;
+          expires_at?: string | null;
+          verified_at?: string | null;
+          deleted_at?: string | null;
           uploaded_by?: string | null;
         };
         Update: BaseUpdate & Partial<Omit<Database["public"]["Tables"]["media_files"]["Insert"], "id">>;
@@ -283,11 +297,13 @@ export type Database = {
     Views: { [_ in never]: never };
     Functions: {
       is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
+      media_reference_count: { Args: { p_media_id: string }; Returns: number };
     };
     Enums: {
       user_role: "ADMIN";
       page_status: "DRAFT" | "PUBLISHED";
       note_status: "DRAFT" | "PRIVATE" | "PUBLIC" | "ARCHIVED";
+      media_status: "PENDING" | "READY" | "FAILED" | "DELETED";
       block_type:
         | "TEXT"
         | "HEADING"

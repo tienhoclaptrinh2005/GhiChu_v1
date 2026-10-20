@@ -13,17 +13,17 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
   const filtered = notes.filter((note) => note.categories.some((item) => item.slug === slug));
 
   return (
-    <main id="main-content" className="mx-auto min-h-[70vh] max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
-      <Link href="/categories" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-indigo-600"><ArrowLeft className="size-4" />Danh mục</Link>
-      <div className="mt-6 border-b border-slate-200 pb-8">
-        <span className="block size-3 rounded-full" style={{ backgroundColor: category.color }} />
-        <h1 className="mt-4 text-4xl font-black tracking-[-0.04em] text-slate-950">{category.name}</h1>
-        <p className="mt-3 max-w-2xl leading-7 text-slate-600">{category.description}</p>
+    <main id="main-content" className="mx-auto min-h-[70vh] max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+      <Link href="/categories" className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-muted transition-colors hover:text-forest"><ArrowLeft className="size-4" />Danh mục</Link>
+      <div className="section-rule mt-5 pb-8">
+        <span className="block size-4 border-2 border-line shadow-[2px_2px_0_var(--ds-shadow)]" style={{ backgroundColor: category.color }} />
+        <h1 className="mt-4 text-4xl font-bold tracking-[-0.04em] text-ink sm:text-5xl">{category.name}</h1>
+        <p className="mt-3 max-w-2xl leading-7 text-muted">{category.description}</p>
       </div>
       {filtered.length > 0 ? (
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{filtered.map((note) => <NoteCard key={note.id} note={note} />)}</div>
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{filtered.map((note) => <NoteCard key={note.id} note={note} />)}</div>
       ) : (
-        <p className="mt-10 rounded-2xl border border-dashed border-slate-300 bg-white/60 p-8 text-center text-sm text-slate-500">Chưa có ghi chú công khai trong danh mục này.</p>
+        <p className="empty-state mt-10 p-8 text-center text-sm text-muted">Chưa có ghi chú công khai trong danh mục này.</p>
       )}
     </main>
   );
