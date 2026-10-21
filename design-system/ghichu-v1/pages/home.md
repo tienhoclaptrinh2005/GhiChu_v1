@@ -12,7 +12,7 @@
 ## Layout
 
 - Reading shell: `max-width: 768px`, căn giữa, một cột ở mọi breakpoint.
-- Profile hero: cover 128–160px, avatar chồng mép cover, tên + verified mark, headline, mô tả và anchor xuống nội dung.
+- Profile hero: cover 128–160px, theme toggle ở góc phải cover, avatar chồng mép cover, tên + verified mark, headline, mô tả và anchor xuống nội dung.
 - Link stack: mỗi link cao tối thiểu 88px, khoảng cách 16px, icon tròn bên trái, nhãn ở giữa, affordance bên phải.
 - Nội dung sau link stack dùng card/section hiện có; danh sách ghi chú tối đa 2 cột trong shell.
 
@@ -21,6 +21,7 @@
 - Link nội bộ dùng `next/link`; URL web bên ngoài mở tab mới với `rel="noreferrer"`.
 - `mailto:` và `tel:` dùng anchor chuẩn, không ép mở tab mới.
 - Hover chỉ dịch chuyển 2px và tăng hard shadow; focus ring dùng token `--ds-focus`.
+- Theme toggle là nút icon 44×44px có accessible name, nằm trong profile hero thay cho public header.
 - Target chạm không nhỏ hơn 44px; link chính chủ ý lớn hơn để tối ưu thao tác một tay.
 
 ## Responsive & accessibility

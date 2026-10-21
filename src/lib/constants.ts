@@ -9,12 +9,6 @@ import {
   Settings,
 } from "lucide-react";
 
-export const publicNavigation = [
-  { href: "/", label: "Trang chủ" },
-  { href: "/notes", label: "Ghi chú" },
-  { href: "/categories", label: "Danh mục" },
-];
-
 export const adminNavigation = [
   { href: "/admin", label: "Tổng quan", icon: LayoutDashboard },
   { href: "/admin/pages", label: "Trang & block", icon: Blocks },

@@ -12,7 +12,7 @@ const loginSchema = z.object({
 });
 
 function loginError(message: string): never {
-  redirect(`/admin/login?error=${encodeURIComponent(message)}`);
+  redirect(`/login?error=${encodeURIComponent(message)}`);
 }
 
 export async function loginAction(formData: FormData) {
@@ -55,5 +55,5 @@ export async function logoutAction() {
     const supabase = await createServerSupabaseClient();
     await supabase.auth.signOut();
   }
-  redirect("/admin/login");
+  redirect("/login");
 }

@@ -15,5 +15,5 @@ export async function GET(request: Request) {
     if (!error) return NextResponse.redirect(new URL(next, url.origin));
   }
 
-  return NextResponse.redirect(new URL("/admin/login?error=callback", url.origin));
+  return NextResponse.redirect(new URL("/login?error=callback", url.origin));
 }

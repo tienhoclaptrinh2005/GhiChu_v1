@@ -70,7 +70,7 @@
 - **Input/Select:** min-height 46px, Paper/Surface, border 2px, placeholder đủ tương phản, focus ring 3px Sky.
 - **Card:** Surface, border 2px, hard shadow 5px. Card liên kết có hover nhẹ; card tĩnh không nhảy.
 - **Badge:** hình chữ nhật bo 4px, border 2px, uppercase/semibold; không dùng pill.
-- **Navigation:** sticky public header, bottom scrollable admin nav trên mobile, sidebar trên desktop.
+- **Navigation:** public site không dùng header/footer cố định; theme toggle nằm trong profile hero. Admin dùng bottom scrollable nav trên mobile và sidebar trên desktop.
 - **Empty state:** luôn có mô tả và hành động hoặc gợi ý tiếp theo; không để vùng kết quả trống.
 
 ## 4. Page patterns

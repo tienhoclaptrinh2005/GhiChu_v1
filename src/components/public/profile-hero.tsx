@@ -1,5 +1,6 @@
 import { ArrowDown, CheckCircle2 } from "lucide-react";
 
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { getInitials } from "@/lib/utils";
 import type { SiteSettings } from "@/types/domain";
@@ -19,8 +20,8 @@ export function ProfileHero({ settings }: { settings: SiteSettings }) {
         ) : null}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(9,13,11,0.42))]" />
         <span className="absolute left-6 top-6 size-4 border-2 border-[#fffdf5] bg-accent shadow-[5px_5px_0_#0a100d]" aria-hidden="true" />
-        <span className="absolute right-8 top-5 size-7 border-2 border-[#fffdf5] bg-pink shadow-[5px_5px_0_#0a100d]" aria-hidden="true" />
         <span className="absolute bottom-5 right-20 size-3 bg-sky shadow-[4px_4px_0_#0a100d]" aria-hidden="true" />
+        <ThemeToggle className="absolute right-5 top-5 z-10 sm:right-6 sm:top-6" />
       </div>
 
       <div className="relative px-5 pb-8 text-center sm:px-10 sm:pb-10">

@@ -5,7 +5,7 @@
 - [ ] Tắt public sign-up trong Supabase Auth.
 - [ ] Chỉ có một `admin_profiles` đang hoạt động.
 - [ ] `ADMIN_EMAIL` khớp chính xác tài khoản Auth.
-- [ ] Không có secret trong biến bắt đầu bằng `NEXT_PUBLIC_`.
+- [ ] Chỉ Supabase Publishable key nằm trong biến bắt đầu bằng `NEXT_PUBLIC_`; Secret key luôn là server-only.
 - [ ] Chạy và kiểm tra toàn bộ RLS policy bằng cả anon và authenticated token.
 - [ ] Mọi Server Action ghi dữ liệu đều gọi `requireAdmin()` và validate Zod.
 - [ ] Route nhận ID kiểm tra quyền với chính tài nguyên đó để tránh IDOR.

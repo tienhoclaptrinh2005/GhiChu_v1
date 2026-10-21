@@ -24,6 +24,8 @@ npm run dev
 
 Mở `http://localhost:3000`. Trước khi kết nối dịch vụ thật, ứng dụng sẽ hiển thị dữ liệu demo. Không đưa `.env.local` lên Git.
 
+Trang đăng nhập quản trị: `http://localhost:3000/login`. Xem hướng dẫn điền đầy đủ từng biến tại [cấu hình môi trường](docs/ENVIRONMENT.md).
+
 ## Thiết lập Supabase
 
 1. Tạo một dự án Supabase và tắt đăng ký công khai trong Authentication.
@@ -31,7 +33,7 @@ Mở `http://localhost:3000`. Trước khi kết nối dịch vụ thật, ứng
 3. Chạy `supabase/seed.sql` nếu muốn có dữ liệu khởi tạo.
 4. Tạo duy nhất một tài khoản trong Supabase Auth.
 5. Thêm tài khoản đó vào `public.admin_profiles` theo hướng dẫn trong `supabase/README.md`.
-6. Điền URL, anon key, service role key và `ADMIN_EMAIL` vào `.env.local`.
+6. Điền Project URL, Publishable key, Secret key và `ADMIN_EMAIL` vào `.env.local`.
 
 ## Thiết lập Cloudflare R2
 
@@ -57,7 +59,7 @@ npm run db:reset   # Áp dụng lại migration và seed local
 src/
   app/
     (public)/             Các route dành cho khách
-    admin/(auth)/         Trang đăng nhập
+    (auth)/login/         Trang đăng nhập tại /login
     admin/(dashboard)/    Các route quản trị được bảo vệ
     api/health/           Health check không lộ secret
     auth/callback/        Callback Supabase Auth
