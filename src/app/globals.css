@@ -3,6 +3,10 @@
 @theme inline {
   --font-sans: var(--font-body);
   --font-display: var(--font-retro);
+  --radius-sm: 0.125rem;
+  --radius-md: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.25rem;
   --color-canvas: var(--ds-canvas);
   --color-ink: var(--ds-ink);
   --color-surface: var(--ds-surface);
@@ -19,43 +23,79 @@
 
 :root,
 [data-theme="light"] {
-  --ds-canvas: #f2f2eb;
-  --ds-ink: #231f20;
-  --ds-surface: #fffcf2;
-  --ds-surface-alt: #e3e7dc;
-  --ds-muted: #56635e;
-  --ds-line: #231f20;
-  --ds-forest: #3d5f58;
-  --ds-forest-deep: #2e4742;
-  --ds-accent: #f5b726;
-  --ds-sky: #8bb2de;
-  --ds-pink: #e97b77;
-  --ds-danger: #c62f24;
-  --ds-on-forest: #fffdf5;
-  --ds-on-accent: #231f20;
-  --ds-shadow: #231f20;
-  --ds-focus: #5d90c9;
-  --ds-grid: rgba(35, 31, 32, 0.07);
+  /* Primitive tokens: an original voxel-world palette. */
+  --primitive-sky-100: #e2f6ff;
+  --primitive-sky-400: #62c4f5;
+  --primitive-sky-600: #247db8;
+  --primitive-grass-400: #78d64b;
+  --primitive-grass-600: #349b42;
+  --primitive-grass-800: #176033;
+  --primitive-dirt-500: #a86932;
+  --primitive-dirt-700: #68401f;
+  --primitive-sun-400: #ffd23f;
+  --primitive-cloud: #f9fdff;
+  --primitive-stone: #d9e9ed;
+  --primitive-ink: #10212b;
+
+  /* Semantic tokens. Existing aliases stay stable for every feature. */
+  --ds-canvas: var(--primitive-sky-100);
+  --ds-ink: var(--primitive-ink);
+  --ds-surface: var(--primitive-cloud);
+  --ds-surface-alt: var(--primitive-stone);
+  --ds-muted: #405d69;
+  --ds-line: var(--primitive-ink);
+  --ds-forest: var(--primitive-grass-600);
+  --ds-forest-deep: var(--primitive-grass-800);
+  --ds-accent: var(--primitive-sun-400);
+  --ds-sky: var(--primitive-sky-400);
+  --ds-pink: #ed8738;
+  --ds-danger: #c83532;
+  --ds-on-forest: #07150b;
+  --ds-on-accent: #10212b;
+  --ds-shadow: #07151d;
+  --ds-focus: var(--primitive-sky-600);
+  --ds-grid: rgba(16, 33, 43, 0.08);
+  --ds-title-shadow: #70c9f1;
+  --ds-dirt: var(--primitive-dirt-500);
+  --ds-dirt-deep: var(--primitive-dirt-700);
+  --ds-grass-bright: var(--primitive-grass-400);
 }
 
 [data-theme="dark"] {
-  --ds-canvas: #14231d;
-  --ds-ink: #f2f2eb;
-  --ds-surface: #20372f;
-  --ds-surface-alt: #2e4742;
-  --ds-muted: #c1cbc5;
-  --ds-line: #090d0b;
-  --ds-forest: #8fb0a7;
-  --ds-forest-deep: #0e1b16;
-  --ds-accent: #f5b726;
-  --ds-sky: #a9caee;
-  --ds-pink: #f19a96;
-  --ds-danger: #ff7b70;
-  --ds-on-forest: #101813;
-  --ds-on-accent: #231f20;
-  --ds-shadow: #080d0b;
-  --ds-focus: #a9caee;
-  --ds-grid: rgba(242, 242, 235, 0.06);
+  --primitive-sky-100: #0d1c2a;
+  --primitive-sky-400: #58b8ec;
+  --primitive-sky-600: #85d3f7;
+  --primitive-grass-400: #79d650;
+  --primitive-grass-600: #62bd45;
+  --primitive-grass-800: #163d2a;
+  --primitive-dirt-500: #bd7a3e;
+  --primitive-dirt-700: #59371f;
+  --primitive-sun-400: #ffd23f;
+  --primitive-cloud: #162b38;
+  --primitive-stone: #223f4b;
+  --primitive-ink: #f4fbff;
+
+  --ds-canvas: var(--primitive-sky-100);
+  --ds-ink: var(--primitive-ink);
+  --ds-surface: var(--primitive-cloud);
+  --ds-surface-alt: var(--primitive-stone);
+  --ds-muted: #bfd4dd;
+  --ds-line: #071117;
+  --ds-forest: var(--primitive-grass-600);
+  --ds-forest-deep: var(--primitive-grass-800);
+  --ds-accent: var(--primitive-sun-400);
+  --ds-sky: var(--primitive-sky-400);
+  --ds-pink: #df833c;
+  --ds-danger: #ff716b;
+  --ds-on-forest: #07150b;
+  --ds-on-accent: #10212b;
+  --ds-shadow: #040b0f;
+  --ds-focus: var(--primitive-sky-600);
+  --ds-grid: rgba(244, 251, 255, 0.07);
+  --ds-title-shadow: #174e70;
+  --ds-dirt: var(--primitive-dirt-500);
+  --ds-dirt-deep: var(--primitive-dirt-700);
+  --ds-grass-bright: var(--primitive-grass-400);
 }
 
 * {
@@ -69,14 +109,17 @@ html {
 }
 
 body {
+  position: relative;
+  isolation: isolate;
   min-height: 100vh;
   margin: 0;
   overflow-x: hidden;
   background-color: var(--ds-canvas);
   background-image:
     linear-gradient(var(--ds-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--ds-grid) 1px, transparent 1px);
-  background-size: 32px 32px;
+    linear-gradient(90deg, var(--ds-grid) 1px, transparent 1px),
+    linear-gradient(180deg, color-mix(in srgb, var(--ds-sky) 20%, transparent), transparent 34rem);
+  background-size: 32px 32px, 32px 32px, 100% 100%;
   color: var(--ds-ink);
   font-family: var(--font-body), "Segoe UI", sans-serif;
   text-rendering: optimizeLegibility;
@@ -88,9 +131,25 @@ body::before {
   z-index: -1;
   pointer-events: none;
   content: "";
+  opacity: 0.4;
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--ds-accent) 12%, transparent), transparent 28rem) top left / 46rem 34rem no-repeat,
-    linear-gradient(315deg, color-mix(in srgb, var(--ds-sky) 12%, transparent), transparent 30rem) bottom right / 50rem 38rem no-repeat;
+    linear-gradient(var(--ds-surface), var(--ds-surface)) 7vw 7rem / 5rem 1.5rem no-repeat,
+    linear-gradient(var(--ds-surface), var(--ds-surface)) calc(7vw + 1rem) 6rem / 3rem 1rem no-repeat,
+    linear-gradient(var(--ds-surface), var(--ds-surface)) 82vw 14rem / 6rem 1.5rem no-repeat,
+    linear-gradient(var(--ds-surface), var(--ds-surface)) calc(82vw + 1rem) 13rem / 3rem 1rem no-repeat;
+}
+
+body::after {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: -1;
+  height: 20px;
+  content: "";
+  pointer-events: none;
+  opacity: 0.28;
+  background:
+    linear-gradient(90deg, transparent 50%, color-mix(in srgb, var(--ds-forest-deep) 45%, transparent) 50%) 0 0 / 32px 8px,
+    linear-gradient(var(--ds-grass-bright) 0 40%, var(--ds-dirt) 40% 72%, var(--ds-dirt-deep) 72%);
 }
 
 ::selection {
@@ -134,14 +193,19 @@ h4,
   font-family: var(--font-retro), var(--font-body), sans-serif;
 }
 
+h1 {
+  text-wrap: balance;
+  text-shadow: 2px 2px 0 var(--ds-title-shadow);
+}
+
 .skip-link {
   position: fixed;
   left: 1rem;
   top: 1rem;
   z-index: 100;
   transform: translateY(-200%);
-  border: 2px solid var(--ds-line);
-  border-radius: 0.5rem;
+  border: 3px solid var(--ds-line);
+  border-radius: 2px;
   background: var(--ds-accent);
   box-shadow: 4px 4px 0 var(--ds-shadow);
   padding: 0.75rem 1rem;
@@ -158,8 +222,8 @@ h4,
   width: 2.75rem;
   height: 2.75rem;
   place-items: center;
-  border: 2px solid var(--ds-line);
-  border-radius: 0.5rem;
+  border: 3px solid var(--ds-line);
+  border-radius: 2px;
   background: var(--ds-surface);
   box-shadow: 3px 3px 0 var(--ds-shadow);
   color: var(--ds-ink);
@@ -169,7 +233,7 @@ h4,
 .theme-toggle:hover {
   transform: translate(-2px, -2px);
   box-shadow: 5px 5px 0 var(--ds-shadow);
-  background: var(--ds-accent);
+  background: var(--ds-sky);
   color: var(--ds-on-accent);
 }
 
@@ -189,7 +253,11 @@ h4,
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  color: var(--ds-forest);
+  border: 2px solid var(--ds-line);
+  background: var(--ds-accent);
+  box-shadow: 3px 3px 0 var(--ds-shadow);
+  padding: 0.45rem 0.65rem;
+  color: var(--ds-on-accent);
   font-family: var(--font-retro), var(--font-body), sans-serif;
   font-size: 0.72rem;
   font-weight: 700;
@@ -202,8 +270,8 @@ h4,
   width: 0.55rem;
   height: 0.55rem;
   content: "";
-  background: var(--ds-accent);
-  box-shadow: 3px 3px 0 var(--ds-line);
+  background: var(--ds-forest);
+  box-shadow: 2px 2px 0 var(--ds-line);
 }
 
 .pixel-corners {
@@ -224,15 +292,15 @@ h4,
 .pixel-corners::before {
   left: 14px;
   top: 14px;
-  background: var(--ds-accent);
-  box-shadow: 8px 0 0 var(--ds-accent), 0 8px 0 var(--ds-accent), 16px 8px 0 var(--ds-pink);
+  background: var(--ds-grass-bright);
+  box-shadow: 8px 0 0 var(--ds-grass-bright), 0 8px 0 var(--ds-grass-bright), 16px 8px 0 var(--ds-dirt);
 }
 
 .pixel-corners::after {
   right: 14px;
   bottom: 14px;
   background: var(--ds-sky);
-  box-shadow: -8px 0 0 var(--ds-sky), 0 -8px 0 var(--ds-sky), -16px -8px 0 var(--ds-pink);
+  box-shadow: -8px 0 0 var(--ds-sky), 0 -8px 0 var(--ds-sky), -16px -8px 0 var(--ds-accent);
 }
 
 .pixel-grid {
@@ -243,10 +311,10 @@ h4,
 }
 
 .brutal-surface {
-  border: 2px solid var(--ds-line);
-  border-radius: 0.75rem;
+  border: 3px solid var(--ds-line);
+  border-radius: 3px;
   background: var(--ds-surface);
-  box-shadow: 6px 6px 0 var(--ds-shadow);
+  box-shadow: 7px 7px 0 var(--ds-shadow), inset 0 -5px 0 color-mix(in srgb, var(--ds-sky) 22%, transparent);
 }
 
 .section-rule {
@@ -255,19 +323,123 @@ h4,
 }
 
 .empty-state {
-  border: 2px dashed var(--ds-line);
-  border-radius: 0.75rem;
+  border: 3px dashed var(--ds-line);
+  border-radius: 3px;
   background: color-mix(in srgb, var(--ds-surface) 88%, transparent);
   box-shadow: 5px 5px 0 var(--ds-shadow);
 }
 
 .retro-toast {
-  border: 2px solid var(--ds-line) !important;
-  border-radius: 0.5rem !important;
+  border: 3px solid var(--ds-line) !important;
+  border-radius: 2px !important;
   background: var(--ds-surface) !important;
   box-shadow: 5px 5px 0 var(--ds-shadow) !important;
   color: var(--ds-ink) !important;
   font-family: var(--font-body), sans-serif !important;
+}
+
+/* Component-level voxel patterns. */
+.voxel-panel {
+  position: relative;
+  border: 3px solid var(--ds-line);
+  border-radius: 3px;
+  background: var(--ds-surface);
+  box-shadow:
+    7px 7px 0 var(--ds-shadow),
+    inset 0 -5px 0 color-mix(in srgb, var(--ds-sky) 20%, transparent);
+}
+
+.voxel-title {
+  font-family: var(--font-retro), var(--font-body), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  text-shadow:
+    2px 2px 0 var(--ds-title-shadow),
+    4px 4px 0 color-mix(in srgb, var(--ds-shadow) 18%, transparent);
+}
+
+.voxel-icon {
+  border: 3px solid var(--ds-line);
+  border-radius: 2px;
+  box-shadow:
+    4px 4px 0 var(--ds-shadow),
+    inset 0 -4px 0 color-mix(in srgb, var(--ds-shadow) 18%, transparent),
+    inset 0 4px 0 color-mix(in srgb, white 26%, transparent);
+}
+
+.voxel-landscape {
+  position: relative;
+  isolation: isolate;
+  background:
+    linear-gradient(180deg, #79d1ff 0 64%, #8bdf54 64% 70%, #3e9d43 70% 76%, #a86a35 76% 100%);
+}
+
+.voxel-landscape::before {
+  position: absolute;
+  left: 8%;
+  top: 18%;
+  z-index: 1;
+  width: 54px;
+  height: 18px;
+  content: "";
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    14px -9px 0 rgba(255, 255, 255, 0.9),
+    38px 0 0 rgba(255, 255, 255, 0.9),
+    min(66vw, 520px) 30px 0 rgba(255, 255, 255, 0.78),
+    min(70vw, 560px) 21px 0 rgba(255, 255, 255, 0.78);
+}
+
+.voxel-landscape::after {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  height: 30%;
+  content: "";
+  opacity: 0.48;
+  background:
+    linear-gradient(90deg, transparent 75%, rgba(24, 96, 51, 0.65) 75%) 0 0 / 32px 10px,
+    linear-gradient(90deg, rgba(104, 64, 31, 0.4) 50%, transparent 50%) 0 12px / 28px 22px;
+}
+
+[data-theme="dark"] .voxel-landscape {
+  background:
+    linear-gradient(180deg, #17384e 0 64%, #458d3b 64% 70%, #246433 70% 76%, #694326 76% 100%);
+}
+
+.grass-block {
+  display: block;
+  border: 3px solid var(--ds-line);
+  border-radius: 2px;
+  background: var(--ds-dirt);
+  box-shadow: 5px 5px 0 var(--ds-shadow);
+}
+
+.grass-block::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 30%;
+  content: "";
+  background: var(--ds-grass-bright);
+  border-bottom: 3px solid var(--ds-line);
+}
+
+.voxel-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.voxel-link::before {
+  align-self: stretch;
+  width: 7px;
+  content: "";
+  background: linear-gradient(
+    var(--ds-grass-bright) 0 34%,
+    var(--ds-forest) 34% 44%,
+    var(--ds-dirt) 44% 74%,
+    var(--ds-dirt-deep) 74%
+  );
+  border-right: 3px solid var(--ds-line);
 }
 
 .note-prose {
@@ -321,9 +493,9 @@ h4,
 }
 
 .note-prose blockquote {
-  border: 2px solid var(--ds-line);
+  border: 3px solid var(--ds-line);
   border-left-width: 8px;
-  border-radius: 0.5rem;
+  border-radius: 2px;
   background: var(--ds-surface-alt);
   box-shadow: 4px 4px 0 var(--ds-shadow);
   padding: 1rem 1.25rem;
@@ -332,7 +504,7 @@ h4,
 
 .note-prose code {
   border: 1px solid var(--ds-line);
-  border-radius: 0.25rem;
+  border-radius: 2px;
   background: var(--ds-surface-alt);
   padding: 0.12rem 0.35rem;
   color: var(--ds-danger);
@@ -342,7 +514,7 @@ h4,
 .note-prose pre {
   overflow-x: auto;
   border: 2px solid var(--ds-line);
-  border-radius: 0.5rem;
+  border-radius: 2px;
   background: var(--ds-forest-deep);
   box-shadow: 5px 5px 0 var(--ds-shadow);
   padding: 1rem;

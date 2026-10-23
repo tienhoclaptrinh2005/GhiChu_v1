@@ -7,8 +7,8 @@ import type { NoteSummary } from "@/types/domain";
 
 export function NoteCard({ note, compact = false }: { note: NoteSummary; compact?: boolean }) {
   return (
-    <article className="group relative flex h-full min-h-64 flex-col overflow-hidden rounded-lg border-2 border-line bg-surface p-5 shadow-[5px_5px_0_var(--ds-shadow)] transition-[transform,box-shadow,background-color] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-surface-alt hover:shadow-[7px_7px_0_var(--ds-shadow)]">
-      <span className="absolute right-0 top-0 size-5 border-b-2 border-l-2 border-line bg-accent" aria-hidden="true" />
+    <article className="group relative flex h-full min-h-64 flex-col overflow-hidden rounded-sm border-[3px] border-line bg-surface p-5 shadow-[5px_5px_0_var(--ds-shadow),inset_0_-4px_0_color-mix(in_srgb,var(--ds-sky)_15%,transparent)] transition-[transform,box-shadow,background-color] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-surface-alt hover:shadow-[7px_7px_0_var(--ds-shadow)]">
+      <span className="grass-block absolute right-3 top-3 size-6" aria-hidden="true" />
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex flex-wrap gap-1.5">
           {note.categories.slice(0, 2).map((category) => (
@@ -24,7 +24,7 @@ export function NoteCard({ note, compact = false }: { note: NoteSummary; compact
           </span>
         )}
       </div>
-      <h2 className="text-lg font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest">
+      <h2 className="font-display text-lg font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest">
         <Link href={`/notes/${note.slug}`} className="after:absolute after:inset-0">
           {note.title}
         </Link>

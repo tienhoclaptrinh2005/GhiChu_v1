@@ -21,7 +21,7 @@ export function CollectionPlaceholder({ title, description, createHref, createLa
       <Card>
         <CardContent className="p-0">
           <div className="flex flex-col items-center px-6 py-14 text-center">
-            <span className="grid size-14 place-items-center rounded-md border-2 border-line bg-accent text-[#231f20] shadow-[4px_4px_0_var(--ds-shadow)]">
+            <span className="voxel-icon grid size-14 place-items-center bg-accent text-[#10212b]">
               <Construction className="size-6" />
             </span>
             <h2 className="mt-5 text-lg font-bold text-ink">Module đã sẵn sàng để triển khai</h2>

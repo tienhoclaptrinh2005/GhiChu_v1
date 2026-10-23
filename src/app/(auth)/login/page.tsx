@@ -28,42 +28,43 @@ export default async function LoginPage({
 
   return (
     <main id="main-content" className="grid min-h-screen bg-canvas lg:grid-cols-[1.05fr_0.95fr]">
-      <section className="pixel-corners pixel-grid relative hidden overflow-hidden border-r-2 border-line bg-forest-deep p-12 text-[#fffdf5] lg:flex lg:flex-col lg:justify-between">
-        <Link href="/" className="relative flex items-center gap-3 font-display font-bold">
-          <span className="grid size-11 place-items-center rounded-md border-2 border-[#090d0b] bg-accent text-[#231f20] shadow-[4px_4px_0_#090d0b]">
+      <section className="voxel-landscape relative hidden overflow-hidden border-r-[3px] border-line p-12 text-ink lg:flex lg:flex-col lg:justify-between">
+        <Link href="/" className="relative z-[3] flex items-center gap-3 font-display font-bold">
+          <span className="voxel-icon grid size-11 place-items-center bg-accent text-[#10212b]">
             <BookMarked className="size-5" aria-hidden="true" />
           </span>
           GhiChu_v1
         </Link>
-        <div className="relative max-w-lg">
-          <p className="font-display text-sm font-bold uppercase tracking-[0.2em] text-accent">Private dashboard</p>
-          <h1 className="mt-4 text-5xl font-bold tracking-[-0.05em]">Mọi nội dung, trong một nơi an toàn.</h1>
-          <p className="mt-5 text-lg leading-8 text-[#d7e1dc]">Quản lý trang chủ, ghi chú, phiên bản và thư viện media mà không cần chỉnh source hay deploy lại.</p>
+        <div className="voxel-panel relative z-[3] max-w-xl bg-surface/95 p-8">
+          <p className="retro-label">Private dashboard</p>
+          <h1 className="voxel-title mt-5 text-5xl">Mọi nội dung, trong một nơi an toàn.</h1>
+          <p className="mt-5 text-lg leading-8 text-muted">Quản lý trang chủ, ghi chú, phiên bản và thư viện media mà không cần chỉnh source hay deploy lại.</p>
         </div>
-        <div className="relative flex items-center gap-3 text-sm text-[#c2d0c9]">
-          <ShieldCheck className="size-5 text-accent" aria-hidden="true" />
+        <div className="voxel-panel relative z-[3] flex items-center gap-3 bg-surface/95 p-4 text-sm font-semibold text-muted">
+          <ShieldCheck className="size-5 text-forest" aria-hidden="true" />
           Xác thực Supabase + phân quyền server + RLS
         </div>
+        <span className="grass-block absolute bottom-10 right-10 z-[2] size-20" aria-hidden="true" />
       </section>
 
       <section className="relative flex items-center justify-center px-5 py-16 sm:px-10">
         <ThemeToggle className="absolute right-5 top-5" />
-        <div className="brutal-surface w-full max-w-md p-6 sm:p-8">
+        <div className="voxel-panel w-full max-w-md p-6 sm:p-8">
           <Link href="/" className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-muted transition-colors hover:text-forest">
             <ArrowLeft className="size-4" aria-hidden="true" />
             Về website
           </Link>
-          <div className="mt-6 grid size-13 place-items-center rounded-md border-2 border-line bg-accent text-[#231f20] shadow-[4px_4px_0_var(--ds-shadow)]">
+          <div className="voxel-icon mt-6 grid size-13 place-items-center bg-accent text-[#10212b]">
             <KeyRound className="size-5" aria-hidden="true" />
           </div>
-          <h2 className="mt-6 text-3xl font-bold tracking-tight text-ink">Đăng nhập Admin</h2>
+          <h2 className="voxel-title mt-6 text-3xl text-ink">Đăng nhập Admin</h2>
           <p className="mt-2 text-sm leading-6 text-muted">Chỉ tài khoản đã được thêm vào bảng <code className="rounded-sm border border-line bg-surface-alt px-1.5 py-0.5">admin_profiles</code> mới được phép truy cập.</p>
 
           {!configured && (
-            <div className="mt-5 rounded-md border-2 border-line bg-accent p-3.5 text-sm leading-6 text-[#231f20] shadow-[3px_3px_0_var(--ds-shadow)]">Supabase chưa được cấu hình. Sao chép <code>.env.example</code> thành <code>.env.local</code> và điền thông tin dự án.</div>
+            <div className="mt-5 rounded-sm border-[3px] border-line bg-accent p-3.5 text-sm leading-6 text-[#10212b] shadow-[3px_3px_0_var(--ds-shadow)]">Supabase chưa được cấu hình. Sao chép <code>.env.example</code> thành <code>.env.local</code> và điền thông tin dự án.</div>
           )}
           {error && (
-            <div role="alert" className="mt-5 rounded-md border-2 border-line bg-pink p-3.5 text-sm font-semibold text-[#231f20] shadow-[3px_3px_0_var(--ds-shadow)]">{error === "callback" ? "Liên kết đăng nhập không hợp lệ hoặc đã hết hạn." : error}</div>
+            <div role="alert" className="mt-5 rounded-sm border-[3px] border-line bg-pink p-3.5 text-sm font-semibold text-[#10212b] shadow-[3px_3px_0_var(--ds-shadow)]">{error === "callback" ? "Liên kết đăng nhập không hợp lệ hoặc đã hết hạn." : error}</div>
           )}
 
           <form action={loginAction} className="mt-6 space-y-4">

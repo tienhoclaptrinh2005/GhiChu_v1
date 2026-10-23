@@ -31,13 +31,13 @@ export default async function NoteDetailPage({ params }: PageProps) {
         <ArrowLeft className="size-4" />
         Tất cả ghi chú
       </Link>
-      <article className="mt-5 overflow-hidden rounded-xl border-2 border-line bg-surface shadow-[8px_8px_0_var(--ds-shadow)]">
-        <header className="pixel-corners border-b-2 border-line bg-surface-alt px-6 py-8 sm:px-10 sm:py-10">
+      <article className="voxel-panel mt-5 overflow-hidden">
+        <header className="pixel-corners border-b-[3px] border-line bg-surface-alt px-6 py-8 sm:px-10 sm:py-10">
           <div className="flex flex-wrap gap-2">
             {note.categories.map((category) => <Badge key={category.id} tone="indigo">{category.name}</Badge>)}
             {note.isPinned && <Badge tone="amber">Đã ghim</Badge>}
           </div>
-          <h1 className="mt-5 text-balance text-3xl font-bold tracking-[-0.04em] text-ink sm:text-5xl">{note.title}</h1>
+          <h1 className="voxel-title mt-5 text-balance text-3xl text-ink sm:text-5xl">{note.title}</h1>
           <p className="mt-4 text-lg leading-8 text-muted">{note.excerpt}</p>
           <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 border-t-2 border-dashed border-line/30 pt-4 font-display text-xs font-semibold text-muted">
             <span>Cập nhật {formatDate(note.updatedAt)}</span>

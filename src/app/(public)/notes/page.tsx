@@ -24,7 +24,7 @@ export default async function NotesPage() {
       <div className="section-rule flex flex-col gap-6 pb-8 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="retro-label">Thư viện</p>
-          <h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] text-ink sm:text-5xl">Tất cả ghi chú</h1>
+          <h1 className="voxel-title mt-3 text-4xl text-ink sm:text-5xl">Tất cả ghi chú</h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-muted">Những bài viết ngắn, tài liệu thực hành và checklist mình muốn tìm lại thật nhanh.</p>
         </div>
         <Link href="/search" className={buttonVariants({ variant: "accent" })}>
@@ -36,7 +36,7 @@ export default async function NotesPage() {
         <nav aria-label="Lọc nhanh theo danh mục" className="mt-6 flex flex-wrap items-center gap-2">
           <span className="mr-1 inline-flex items-center gap-2 text-sm font-bold text-muted"><FolderTree className="size-4" />Chủ đề:</span>
           {categories.map((category) => (
-            <Link key={category.id} href={`/categories/${category.slug}`} className="inline-flex min-h-11 items-center rounded-md border-2 border-line bg-surface px-3 text-xs font-bold text-ink shadow-[2px_2px_0_var(--ds-shadow)] transition-colors hover:bg-sky">
+            <Link key={category.id} href={`/categories/${category.slug}`} className="inline-flex min-h-11 items-center rounded-sm border-[3px] border-line bg-surface px-3 text-xs font-bold text-ink shadow-[2px_2px_0_var(--ds-shadow)] transition-colors hover:bg-sky">
               {category.name}
             </Link>
           ))}

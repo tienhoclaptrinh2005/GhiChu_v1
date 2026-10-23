@@ -7,7 +7,7 @@ export default function NotFound() {
   return (
     <main id="main-content" className="grid min-h-screen place-items-center px-4">
       <div className="max-w-md text-center">
-        <span className="mx-auto grid size-16 place-items-center rounded-lg border-2 border-line bg-pink text-[#231f20] shadow-[5px_5px_0_var(--ds-shadow)]">
+        <span className="voxel-icon mx-auto grid size-16 place-items-center bg-pink text-[#10212b]">
           <FileQuestion className="size-7" />
         </span>
         <p className="retro-label mt-7">Lỗi 404</p>

@@ -19,7 +19,7 @@ export default async function AdminMediaPage() {
             <h2 id="media-library-title" className="text-xl font-bold tracking-tight text-ink">File gần đây</h2>
             <p className="mt-1 text-sm text-muted">Hiển thị tối đa 60 file chưa xóa.</p>
           </div>
-          <span className="rounded-sm border-2 border-line bg-accent px-3 py-1 font-display text-xs font-bold text-[#231f20] shadow-[2px_2px_0_var(--ds-shadow)]">{media.length} file</span>
+          <span className="rounded-sm border-[3px] border-line bg-accent px-3 py-1 font-display text-xs font-bold text-[#10212b] shadow-[2px_2px_0_var(--ds-shadow)]">{media.length} file</span>
         </div>
         <MediaLibrary items={media} />
       </section>

@@ -40,17 +40,17 @@ function icon(name: string) {
 }
 
 function linkIconTone(tone: string, index: number) {
-  if (tone === "blue") return "bg-sky text-[#17212c]";
-  if (tone === "orange" || tone === "amber") return "bg-accent text-[#231f20]";
-  if (tone === "rose" || tone === "pink") return "bg-pink text-[#231f20]";
+  if (tone === "blue") return "bg-sky text-[#10212b]";
+  if (tone === "orange" || tone === "amber") return "bg-accent text-[#10212b]";
+  if (tone === "rose" || tone === "pink") return "bg-pink text-[#10212b]";
   if (tone === "green" || tone === "violet") {
     return "bg-forest text-[var(--ds-on-forest)]";
   }
 
   const fallbackTones = [
-    "bg-sky text-[#17212c]",
-    "bg-accent text-[#231f20]",
-    "bg-pink text-[#231f20]",
+    "bg-sky text-[#10212b]",
+    "bg-accent text-[#10212b]",
+    "bg-pink text-[#10212b]",
     "bg-forest text-[var(--ds-on-forest)]",
   ];
   return fallbackTones[index % fallbackTones.length];
@@ -72,7 +72,7 @@ function LinkButtons({ block }: { block: PageBlock }) {
     <section aria-labelledby={`links-${block.id}`}>
       <div className="mb-5 text-center">
         <p className="retro-label justify-center">Điểm đến nhanh</p>
-        <h2 id={`links-${block.id}`} className="mt-3 text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+        <h2 id={`links-${block.id}`} className="voxel-title mt-3 text-2xl text-ink sm:text-3xl">
           {block.name}
         </h2>
       </div>
@@ -88,7 +88,7 @@ function LinkButtons({ block }: { block: PageBlock }) {
             <>
               <span
                 className={cn(
-                  "grid size-12 shrink-0 place-items-center rounded-full border-2 border-line transition-transform duration-150 group-hover:-rotate-3 group-hover:scale-105",
+                  "voxel-icon grid size-12 shrink-0 place-items-center transition-transform duration-150 group-hover:-rotate-3 group-hover:scale-105",
                   linkIconTone(text(item.tone), index),
                 )}
               >
@@ -114,7 +114,7 @@ function LinkButtons({ block }: { block: PageBlock }) {
             </>
           );
           const className =
-            "group grid min-h-[5.5rem] grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-3 rounded-xl border-2 border-line bg-surface p-3 shadow-[5px_5px_0_var(--ds-shadow)] transition-[transform,box-shadow,background-color] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-surface-alt hover:shadow-[7px_7px_0_var(--ds-shadow)] sm:grid-cols-[3.5rem_minmax(0,1fr)_3.5rem] sm:p-4";
+            "voxel-link group grid min-h-[5.5rem] grid-cols-[7px_3rem_minmax(0,1fr)_3rem] items-center gap-3 rounded-sm border-[3px] border-line bg-surface pr-3 shadow-[5px_5px_0_var(--ds-shadow),inset_0_-4px_0_color-mix(in_srgb,var(--ds-sky)_14%,transparent)] transition-[transform,box-shadow,background-color] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-surface-alt hover:shadow-[7px_7px_0_var(--ds-shadow)] sm:grid-cols-[7px_3.5rem_minmax(0,1fr)_3.5rem] sm:pr-4";
 
           return external ? (
             <a
@@ -151,19 +151,19 @@ export function BlockRenderer({ block, notes }: { block: PageBlock; notes: NoteS
     const actionClassName = cn(buttonVariants({ variant: "primary", size: "md" }), "shrink-0");
 
     return (
-      <Card className="pixel-corners overflow-hidden bg-accent text-[#231f20]">
+      <Card className="pixel-corners overflow-hidden bg-sky text-[#10212b]">
         <CardContent className="relative flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:p-6">
-          <span className="grid size-12 shrink-0 place-items-center rounded-md border-2 border-[#231f20] bg-pink shadow-[3px_3px_0_#231f20]">
+          <span className="voxel-icon grid size-12 shrink-0 place-items-center bg-accent">
             <Megaphone className="size-5" aria-hidden="true" />
           </span>
           <div className="min-w-0 flex-1">
             <p className="font-display text-[0.68rem] font-bold uppercase tracking-[0.18em]">
               {text(block.content.eyebrow, "Thông báo")}
             </p>
-            <h2 className="mt-1.5 text-xl font-bold tracking-tight sm:text-2xl">
+            <h2 className="voxel-title mt-1.5 text-xl sm:text-2xl">
               {text(block.content.title, block.name)}
             </h2>
-            <p className="mt-2 text-sm leading-6 text-[#382b2b] sm:text-base">
+            <p className="mt-2 text-sm leading-6 text-[#173747] sm:text-base">
               {text(block.content.description)}
             </p>
           </div>
@@ -192,7 +192,7 @@ export function BlockRenderer({ block, notes }: { block: PageBlock; notes: NoteS
     return (
       <Card className="bg-surface-alt">
         <CardContent className="flex gap-4">
-          <span className="grid size-12 shrink-0 place-items-center rounded-md border-2 border-line bg-forest text-[var(--ds-on-forest)] shadow-[3px_3px_0_var(--ds-shadow)]">
+          <span className="voxel-icon grid size-12 shrink-0 place-items-center bg-forest text-[var(--ds-on-forest)]">
             {icon(text(block.content.icon, "sparkles"))}
           </span>
           <div>
@@ -213,7 +213,7 @@ export function BlockRenderer({ block, notes }: { block: PageBlock; notes: NoteS
         <div className="mb-5 flex items-end justify-between gap-5">
           <div>
             <p className="retro-label">Đọc tiếp</p>
-            <h2 className="mt-3 text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+            <h2 className="voxel-title mt-3 text-2xl text-ink sm:text-3xl">
               {text(block.content.title, block.name)}
             </h2>
             <p className="mt-1 text-sm text-muted">{text(block.content.description)}</p>
@@ -232,7 +232,7 @@ export function BlockRenderer({ block, notes }: { block: PageBlock; notes: NoteS
   if (block.type === "DIVIDER") return <hr className="section-rule" />;
 
   if (block.type === "HEADING") {
-    return <h2 className="text-2xl font-bold tracking-tight text-ink">{text(block.content.text, block.name)}</h2>;
+    return <h2 className="voxel-title text-2xl text-ink">{text(block.content.text, block.name)}</h2>;
   }
 
   if (block.type === "TEXT") {

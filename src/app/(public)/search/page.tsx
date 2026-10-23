@@ -14,7 +14,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   return (
     <main id="main-content" className="mx-auto min-h-[70vh] max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
       <p className="retro-label">Tra cứu</p>
-      <h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] text-ink sm:text-5xl">Tìm ghi chú</h1>
+      <h1 className="voxel-title mt-3 text-4xl text-ink sm:text-5xl">Tìm ghi chú</h1>
       <p className="mt-3 max-w-2xl leading-7 text-muted">Tìm nhanh theo tiêu đề hoặc nội dung tóm tắt của ghi chú công khai.</p>
       <form action="/search" className="mt-7 grid max-w-3xl gap-3 sm:grid-cols-[1fr_auto]">
         <div className="relative">

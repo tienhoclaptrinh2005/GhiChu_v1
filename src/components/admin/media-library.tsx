@@ -119,7 +119,7 @@ export function MediaLibrary({ items }: { items: MediaFileItem[] }) {
                 </p>
               </div>
               {item.failureReason && (
-                <p className="rounded-md border-2 border-line bg-pink px-3 py-2 text-xs font-semibold leading-5 text-[#231f20]">{item.failureReason}</p>
+                <p className="rounded-sm border-[3px] border-line bg-pink px-3 py-2 text-xs font-semibold leading-5 text-[#10212b]">{item.failureReason}</p>
               )}
               <div className="flex items-center justify-between gap-3 border-t-2 border-dashed border-line/30 pt-4">
                 <time className="text-xs text-muted" dateTime={item.createdAt}>
@@ -144,7 +144,7 @@ export function MediaLibrary({ items }: { items: MediaFileItem[] }) {
                       variant="ghost"
                       disabled={verifyingId === item.id || deletingId === item.id}
                       onClick={() => retryVerification(item)}
-                      className="text-forest hover:bg-sky hover:text-[#17212c]"
+                      className="text-forest hover:bg-sky hover:text-[#10212b]"
                     >
                       {verifyingId === item.id ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <RefreshCw className="size-4" aria-hidden="true" />}
                       Xác minh lại
@@ -156,7 +156,7 @@ export function MediaLibrary({ items }: { items: MediaFileItem[] }) {
                     variant="ghost"
                     disabled={deletingId === item.id || verifyingId === item.id}
                     onClick={() => deleteItem(item)}
-                    className="text-danger hover:bg-pink hover:text-[#231f20]"
+                    className="text-danger hover:bg-pink hover:text-[#10212b]"
                   >
                     {deletingId === item.id ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <Trash2 className="size-4" aria-hidden="true" />}
                     Xóa

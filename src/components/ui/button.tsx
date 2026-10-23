@@ -4,19 +4,19 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 export const buttonVariants = cva(
-  "inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border-2 border-line text-sm font-bold shadow-[3px_3px_0_var(--ds-shadow)] transition-[transform,box-shadow,background-color,color] duration-150 outline-none hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_var(--ds-shadow)] active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0_var(--ds-shadow)] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none",
+  "inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-sm border-[3px] border-line text-sm font-bold shadow-[3px_3px_0_var(--ds-shadow),inset_0_-3px_0_color-mix(in_srgb,var(--ds-shadow)_16%,transparent)] transition-[transform,box-shadow,background-color,color] duration-150 outline-none hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_var(--ds-shadow),inset_0_-3px_0_color-mix(in_srgb,var(--ds-shadow)_16%,transparent)] active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0_var(--ds-shadow)] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none",
   {
     variants: {
       variant: {
         primary:
-          "bg-forest-deep text-[#fffdf5] hover:bg-forest hover:text-[var(--ds-on-forest)]",
+          "bg-forest-deep text-[#f7fdff] hover:bg-forest hover:text-[var(--ds-on-forest)]",
         accent:
-          "bg-accent text-[var(--ds-on-accent)] hover:bg-pink",
+          "bg-accent text-[var(--ds-on-accent)] hover:bg-sky",
         outline:
           "bg-surface text-ink hover:bg-surface-alt",
         ghost:
           "border-transparent bg-transparent text-muted shadow-none hover:border-line hover:bg-surface hover:text-ink hover:shadow-[3px_3px_0_var(--ds-shadow)]",
-        danger: "bg-danger text-surface hover:bg-pink hover:text-[var(--ds-on-accent)]",
+        danger: "bg-danger text-white hover:bg-pink hover:text-[var(--ds-on-accent)]",
       },
       size: {
         sm: "h-11 px-3",

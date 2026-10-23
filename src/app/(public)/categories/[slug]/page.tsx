@@ -16,8 +16,8 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
     <main id="main-content" className="mx-auto min-h-[70vh] max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
       <Link href="/categories" className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-muted transition-colors hover:text-forest"><ArrowLeft className="size-4" />Danh mục</Link>
       <div className="section-rule mt-5 pb-8">
-        <span className="block size-4 border-2 border-line shadow-[2px_2px_0_var(--ds-shadow)]" style={{ backgroundColor: category.color }} />
-        <h1 className="mt-4 text-4xl font-bold tracking-[-0.04em] text-ink sm:text-5xl">{category.name}</h1>
+        <span className="block size-4 border-[3px] border-line shadow-[2px_2px_0_var(--ds-shadow)]" style={{ backgroundColor: category.color }} />
+        <h1 className="voxel-title mt-4 text-4xl text-ink sm:text-5xl">{category.name}</h1>
         <p className="mt-3 max-w-2xl leading-7 text-muted">{category.description}</p>
       </div>
       {filtered.length > 0 ? (

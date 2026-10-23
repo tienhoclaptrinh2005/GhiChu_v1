@@ -159,7 +159,7 @@ export function MediaUploader() {
             </p>
           </div>
 
-          <label className="block rounded-lg border-2 border-dashed border-line bg-surface-alt p-5 transition-colors duration-150 hover:bg-sky/35">
+          <label className="block rounded-sm border-[3px] border-dashed border-line bg-surface-alt p-5 transition-colors duration-150 hover:bg-sky/35">
             <span className="mb-2 block text-sm font-bold text-ink">Chọn file</span>
             <input
               ref={fileInputRef}
@@ -170,7 +170,7 @@ export function MediaUploader() {
                 setFile(event.target.files?.[0] ?? null);
                 setPrepared(null);
               }}
-              className="block w-full cursor-pointer text-sm text-muted file:mr-4 file:cursor-pointer file:rounded-md file:border-2 file:border-line file:bg-accent file:px-4 file:py-2.5 file:font-bold file:text-[#231f20] file:shadow-[2px_2px_0_var(--ds-shadow)] hover:file:bg-pink"
+              className="block w-full cursor-pointer text-sm text-muted file:mr-4 file:cursor-pointer file:rounded-sm file:border-[3px] file:border-line file:bg-accent file:px-4 file:py-2.5 file:font-bold file:text-[#10212b] file:shadow-[2px_2px_0_var(--ds-shadow)] hover:file:bg-sky"
               required
             />
             <span className="mt-3 block text-xs leading-5 text-muted">
@@ -190,7 +190,7 @@ export function MediaUploader() {
                   setPrepared(null);
                   if (fileInputRef.current) fileInputRef.current.value = "";
                 }}
-                className="mt-2 h-12 w-full rounded-lg border-2 border-line bg-surface px-3.5 text-sm font-semibold text-ink shadow-[3px_3px_0_var(--ds-shadow)] outline-none transition-[transform,box-shadow] focus:-translate-x-0.5 focus:-translate-y-0.5 focus:shadow-[5px_5px_0_var(--ds-shadow)]"
+                className="mt-2 h-12 w-full rounded-sm border-[3px] border-line bg-surface px-3.5 text-sm font-semibold text-ink shadow-[3px_3px_0_var(--ds-shadow)] outline-none transition-[transform,box-shadow] focus:-translate-x-0.5 focus:-translate-y-0.5 focus:shadow-[5px_5px_0_var(--ds-shadow)]"
               >
                 {MEDIA_FOLDERS.map((value) => (
                   <option key={value} value={value}>{mediaProfiles[value].label}</option>
@@ -203,7 +203,7 @@ export function MediaUploader() {
                 value={visibility}
                 disabled={busy}
                 onChange={(event) => setVisibility(event.target.value as MediaVisibility)}
-                className="mt-2 h-12 w-full rounded-lg border-2 border-line bg-surface px-3.5 text-sm font-semibold text-ink shadow-[3px_3px_0_var(--ds-shadow)] outline-none transition-[transform,box-shadow] focus:-translate-x-0.5 focus:-translate-y-0.5 focus:shadow-[5px_5px_0_var(--ds-shadow)]"
+                className="mt-2 h-12 w-full rounded-sm border-[3px] border-line bg-surface px-3.5 text-sm font-semibold text-ink shadow-[3px_3px_0_var(--ds-shadow)] outline-none transition-[transform,box-shadow] focus:-translate-x-0.5 focus:-translate-y-0.5 focus:shadow-[5px_5px_0_var(--ds-shadow)]"
               >
                 <option value="PRIVATE">Riêng tư</option>
                 <option value="PUBLIC">Công khai</option>
@@ -219,12 +219,12 @@ export function MediaUploader() {
               disabled={busy}
               onChange={(event) => setAltText(event.target.value)}
               placeholder="Ví dụ: Góc làm việc cạnh cửa sổ"
-              className="mt-2 h-12 w-full rounded-lg border-2 border-line bg-surface px-3.5 text-sm text-ink shadow-[3px_3px_0_var(--ds-shadow)] outline-none placeholder:text-muted focus:-translate-x-0.5 focus:-translate-y-0.5 focus:shadow-[5px_5px_0_var(--ds-shadow)]"
+              className="mt-2 h-12 w-full rounded-sm border-[3px] border-line bg-surface px-3.5 text-sm text-ink shadow-[3px_3px_0_var(--ds-shadow)] outline-none placeholder:text-muted focus:-translate-x-0.5 focus:-translate-y-0.5 focus:shadow-[5px_5px_0_var(--ds-shadow)]"
             />
           </label>
 
           {prepared && (
-            <div className="flex flex-wrap items-center gap-2 rounded-md border-2 border-line bg-sky px-4 py-3 text-sm font-semibold text-[#17212c] shadow-[3px_3px_0_var(--ds-shadow)]">
+            <div className="flex flex-wrap items-center gap-2 rounded-sm border-[3px] border-line bg-sky px-4 py-3 text-sm font-semibold text-[#10212b] shadow-[3px_3px_0_var(--ds-shadow)]">
               <CheckCircle2 className="size-4" aria-hidden="true" />
               {prepared.converted ? (
                 <>
@@ -242,7 +242,7 @@ export function MediaUploader() {
           )}
 
           {busy && (
-            <div aria-live="polite" className="space-y-2 rounded-md border-2 border-line bg-forest-deep px-4 py-3 text-sm text-[#fffdf5] shadow-[3px_3px_0_var(--ds-shadow)]">
+            <div aria-live="polite" className="space-y-2 rounded-sm border-[3px] border-line bg-forest-deep px-4 py-3 text-sm text-[#f7fdff] shadow-[3px_3px_0_var(--ds-shadow)]">
               <div className="flex items-center justify-between gap-3">
                 <span className="flex items-center gap-2 font-semibold">
                   <Loader2 className="size-4 animate-spin" aria-hidden="true" />
@@ -251,7 +251,7 @@ export function MediaUploader() {
                 {phase === "uploading" && <span>{progress}%</span>}
               </div>
               {phase === "uploading" && (
-                <div className="h-2 overflow-hidden border border-[#090d0b] bg-[#fffdf5]/20">
+                <div className="h-2 overflow-hidden border border-line bg-[#f7fdff]/20">
                   <div className="h-full bg-accent transition-[width]" style={{ width: `${progress}%` }} />
                 </div>
               )}
@@ -264,7 +264,7 @@ export function MediaUploader() {
           </Button>
         </form>
 
-        <aside className="pixel-grid rounded-lg border-2 border-line bg-forest-deep p-5 text-[#fffdf5] shadow-[5px_5px_0_var(--ds-shadow)]">
+        <aside className="pixel-grid rounded-sm border-[3px] border-line bg-forest-deep p-5 text-[#f7fdff] shadow-[5px_5px_0_var(--ds-shadow)]">
           <ShieldCheck className="size-7 text-accent" aria-hidden="true" />
           <h2 className="mt-4 font-bold">Ba lớp kiểm soát</h2>
           <ol className="mt-4 space-y-4 text-sm leading-6 text-[#d7e1dc]">
