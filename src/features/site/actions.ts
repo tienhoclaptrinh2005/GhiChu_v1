@@ -204,7 +204,7 @@ export async function updateSiteSettingsAction(
   });
 
   updateTag(SITE_SETTINGS_CACHE_TAG);
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/settings");
 
   return {

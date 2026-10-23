@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Be_Vietnam_Pro, Chakra_Petch } from "next/font/google";
 import { Toaster } from "sonner";
 
+import { getSiteSettings } from "@/features/site/queries";
+
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -22,7 +24,7 @@ const displayFont = Chakra_Petch({
 
 const themeScript = `(function(){try{var k="ghichu-theme";var s=localStorage.getItem(k);var t=s==="light"||s==="dark"?s:(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");var r=document.documentElement;r.setAttribute("data-theme",t);r.style.colorScheme=t}catch(e){}})()`;
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: "NoteSpace — Personal Notes & Link Hub",
@@ -40,6 +42,30 @@ export const metadata: Metadata = {
     url: siteUrl,
   },
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  let iconUrl: string | URL = "/default-icon.svg";
+  let iconType = "image/svg+xml";
+
+  try {
+    const settings = await getSiteSettings();
+    if (settings.avatarUrl) {
+      const avatarIconUrl = new URL(settings.avatarUrl);
+      avatarIconUrl.searchParams.set("v", settings.avatarMediaId ?? "avatar");
+      iconUrl = avatarIconUrl;
+      iconType = "image/webp";
+    }
+  } catch {
+    // Metadata must remain available while the database or media CDN is unavailable.
+  }
+
+  return {
+    ...baseMetadata,
+    icons: {
+      icon: [{ url: iconUrl, type: iconType }],
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",

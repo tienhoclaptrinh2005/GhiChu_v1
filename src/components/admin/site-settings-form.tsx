@@ -294,7 +294,8 @@ export function SiteSettingsForm({ data }: { data: SiteSettingsEditorData }) {
           <fieldset>
             <legend className="text-sm font-bold text-ink">Ảnh đại diện</legend>
             <p className="mt-1 text-xs leading-5 text-muted">
-              Ảnh upload trong nhóm “Ảnh đại diện” được chuyển WebP và tự động dùng cho trang chủ.
+              Ảnh upload trong nhóm “Ảnh đại diện” được chuyển WebP, dùng cho trang chủ và
+              icon nhỏ trên tab trình duyệt.
             </p>
             <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
               <EmptyMediaChoice
