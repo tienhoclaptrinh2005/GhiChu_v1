@@ -54,7 +54,6 @@ export async function DELETE(_request: Request, { params }: Context) {
     .update({
       status: "DELETED",
       visibility: "PRIVATE",
-      public_url: null,
       deleted_at: deletedAt,
       expires_at: null,
     })
@@ -78,7 +77,6 @@ export async function DELETE(_request: Request, { params }: Context) {
       .update({
         status: "FAILED",
         visibility: "PRIVATE",
-        public_url: null,
         expires_at: null,
         deleted_at: null,
         failure_reason: "R2 chưa xác nhận xóa object. Có thể thử xóa lại an toàn.",

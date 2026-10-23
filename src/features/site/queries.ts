@@ -1,12 +1,17 @@
 import "server-only";
 
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 
 import { demoHomeBlocks, demoSiteSettings } from "@/lib/demo-data";
 import { isSupabaseConfigured } from "@/lib/env";
+import { getPublicMediaUrl } from "@/lib/media/public-url";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import type { Json } from "@/types/database";
 import type { PageBlock, SiteSettings } from "@/types/domain";
+
+export const SITE_SETTINGS_CACHE_TAG = "site-settings";
+export const HOME_BLOCKS_CACHE_TAG = "home-blocks";
 
 function asRecord(value: Json): Record<string, Json | undefined> {
   if (value && typeof value === "object" && !Array.isArray(value)) {
@@ -15,20 +20,25 @@ function asRecord(value: Json): Record<string, Json | undefined> {
   return {};
 }
 
-export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
-  if (!isSupabaseConfigured()) return demoSiteSettings;
+type PublicMediaReference = {
+  id: string;
+  object_key: string;
+  folder: string;
+};
 
-  const supabase = createPublicSupabaseClient();
-  const { data, error } = await supabase
-    .from("site_settings")
-    .select("*")
-    .eq("id", 1)
-    .eq("is_public", true)
-    .maybeSingle();
-
-  if (error) throw error;
-  if (!data) return demoSiteSettings;
-
+function mapSiteSettings(
+  data: {
+    display_name: string;
+    headline: string;
+    description: string;
+    avatar_media_id: string | null;
+    background_media_id: string | null;
+    theme: Json;
+    social_links: Json;
+  },
+  avatar: PublicMediaReference | null,
+  background: PublicMediaReference | null,
+): SiteSettings {
   const theme = asRecord(data.theme);
   const socialLinks = Array.isArray(data.social_links) ? data.social_links : [];
 
@@ -36,8 +46,10 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
     displayName: data.display_name,
     headline: data.headline,
     description: data.description,
-    avatarUrl: data.avatar_url,
-    backgroundImageUrl: data.background_image_url,
+    avatarMediaId: avatar?.id ?? null,
+    avatarUrl: avatar ? getPublicMediaUrl(avatar.object_key) : null,
+    backgroundMediaId: background?.id ?? null,
+    backgroundImageUrl: background ? getPublicMediaUrl(background.object_key) : null,
     theme: {
       accent: typeof theme.accent === "string" ? theme.accent : "#5b5cf0",
       radius:
@@ -61,9 +73,76 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
       return [{ label: record.label, href: record.href, icon: record.icon }];
     }),
   };
-});
+}
 
-export const getHomeBlocks = cache(async (): Promise<PageBlock[]> => {
+async function loadSiteSettings(): Promise<SiteSettings> {
+  if (!isSupabaseConfigured()) return demoSiteSettings;
+
+  const supabase = createPublicSupabaseClient();
+  const { data, error } = await supabase
+    .from("site_settings")
+    .select("*")
+    .eq("id", 1)
+    .eq("is_public", true)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) return demoSiteSettings;
+
+  const selectedIds = [data.avatar_media_id, data.background_media_id].filter(
+    (id): id is string => Boolean(id),
+  );
+  const mediaById = new Map<string, PublicMediaReference>();
+
+  if (selectedIds.length) {
+    const { data: selectedMedia, error: selectedMediaError } = await supabase
+      .from("media_files")
+      .select("id, object_key, folder")
+      .in("id", selectedIds)
+      .eq("status", "READY")
+      .eq("visibility", "PUBLIC")
+      .is("deleted_at", null);
+    if (selectedMediaError) throw selectedMediaError;
+    for (const media of selectedMedia ?? []) mediaById.set(media.id, media);
+  }
+
+  let avatar = data.avatar_media_id
+    ? mediaById.get(data.avatar_media_id) ?? null
+    : null;
+  if (!avatar || avatar.folder !== "avatars") {
+    const { data: latestAvatar } = await supabase
+      .from("media_files")
+      .select("id, object_key, folder")
+      .eq("folder", "avatars")
+      .eq("status", "READY")
+      .eq("visibility", "PUBLIC")
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    avatar = latestAvatar ?? null;
+  }
+
+  const background = data.background_media_id
+    ? mediaById.get(data.background_media_id) ?? null
+    : null;
+
+  return mapSiteSettings(
+    data,
+    avatar,
+    background?.folder === "banners" ? background : null,
+  );
+}
+
+const getCachedSiteSettings = unstable_cache(
+  loadSiteSettings,
+  ["public-site-settings-v2"],
+  { revalidate: 300, tags: [SITE_SETTINGS_CACHE_TAG] },
+);
+
+export const getSiteSettings = cache(getCachedSiteSettings);
+
+async function loadHomeBlocks(): Promise<PageBlock[]> {
   if (!isSupabaseConfigured()) return demoHomeBlocks;
 
   const supabase = createPublicSupabaseClient();
@@ -95,4 +174,12 @@ export const getHomeBlocks = cache(async (): Promise<PageBlock[]> => {
     position: block.position,
     isActive: block.is_active,
   }));
-});
+}
+
+const getCachedHomeBlocks = unstable_cache(
+  loadHomeBlocks,
+  ["public-home-blocks-v1"],
+  { revalidate: 300, tags: [HOME_BLOCKS_CACHE_TAG] },
+);
+
+export const getHomeBlocks = cache(getCachedHomeBlocks);

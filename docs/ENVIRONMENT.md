@@ -24,7 +24,7 @@ R2_ACCOUNT_ID=<cloudflare-account-id>
 R2_ACCESS_KEY_ID=<r2-access-key-id>
 R2_SECRET_ACCESS_KEY=<r2-secret-access-key>
 R2_BUCKET_NAME=ghichu-media
-R2_PUBLIC_BASE_URL=
+R2_PUBLIC_BASE_URL=https://media.vmtshop.tech
 
 R2_SIGNED_URL_TTL_SECONDS=900
 UPLOAD_MAX_FILE_SIZE_MB=10
@@ -44,8 +44,8 @@ Không giữ dấu `< >` trong giá trị thật. Sau khi đổi env, khởi đ�
 | `R2_ACCOUNT_ID` | Server-only | Upload media | Cloudflare Account ID |
 | `R2_ACCESS_KEY_ID` | Server-only | Upload media | R2 API token credentials |
 | `R2_SECRET_ACCESS_KEY` | Server-only | Upload media | R2 API token credentials; chỉ hiển thị một lần khi tạo |
-| `R2_BUCKET_NAME` | Server-only | Upload media | Tên bucket private chứa media |
-| `R2_PUBLIC_BASE_URL` | Server-only | Tùy chọn | Để trống với pipeline bucket private hiện tại |
+| `R2_BUCKET_NAME` | Server-only | Upload media | Tên bucket R2 đang gắn với domain media |
+| `R2_PUBLIC_BASE_URL` | Server-only | Hiển thị media công khai | `https://media.vmtshop.tech`; database chỉ lưu `object_key` |
 | `R2_SIGNED_URL_TTL_SECONDS` | Server-only | Tùy chọn | `900`; hợp lệ từ 60 đến 3600 giây |
 | `UPLOAD_MAX_FILE_SIZE_MB` | Server-only | Tùy chọn | `10`; phải lớn hơn `0` và tối đa `100` MB |
 
@@ -62,12 +62,16 @@ Supabase hiện khuyến nghị Publishable/Secret keys. Mã nguồn vẫn nhậ
 
 ## 4. Thiết lập Cloudflare R2
 
-1. Tạo một bucket private, ví dụ `ghichu-media`.
+1. Dùng bucket `ghichu-media` và kết nối Custom Domain `media.vmtshop.tech` trong R2 → bucket → Settings → Custom Domains.
 2. Trong R2 → Manage API Tokens, tạo token `Object Read & Write` và giới hạn token cho đúng bucket.
 3. Sao chép Access Key ID và Secret Access Key ngay khi tạo token.
 4. Điền Account ID, hai credential và bucket name vào `.env.local`.
-5. Giữ `R2_PUBLIC_BASE_URL` trống với kiến trúc private hiện tại.
+5. Đặt `R2_PUBLIC_BASE_URL=https://media.vmtshop.tech`, không có dấu `/` cuối.
 6. Cấu hình CORS theo `docs/MEDIA_PIPELINE.md` cho localhost và domain production.
+
+Ứng dụng không lưu domain hoặc signed URL vào Supabase. `media_files.object_key` là nguồn dữ liệu duy nhất để dựng URL ảnh. Vì vậy thay domain website không làm hỏng ảnh; nếu đổi riêng domain media, chỉ cần cập nhật `R2_PUBLIC_BASE_URL` và cấu hình `images.remotePatterns` trong `next.config.ts`.
+
+> Lưu ý bảo mật: custom domain của R2 làm toàn bộ object trong bucket có thể được truy cập nếu biết đường dẫn. Không đặt tài liệu nhạy cảm trong bucket public này; file riêng tư cần một bucket private riêng.
 
 ## 5. Local và production
 

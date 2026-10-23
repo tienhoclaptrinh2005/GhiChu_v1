@@ -128,7 +128,13 @@ export function MediaUploader() {
         throw new Error(completed.error || "Server không thể xác minh file.");
       }
 
-      toast.success(output.converted ? "Đã chuyển WebP và upload thành công." : "Đã upload thành công.");
+      toast.success(
+        folder === "avatars"
+          ? "Đã tối ưu WebP và đặt làm ảnh đại diện mới."
+          : output.converted
+            ? "Đã chuyển WebP và upload thành công."
+            : "Đã upload thành công.",
+      );
       setFile(null);
       setAltText("");
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -185,7 +191,9 @@ export function MediaUploader() {
                 value={folder}
                 disabled={busy}
                 onChange={(event) => {
-                  setFolder(event.target.value as MediaFolder);
+                  const nextFolder = event.target.value as MediaFolder;
+                  setFolder(nextFolder);
+                  setVisibility(nextFolder === "avatars" ? "PUBLIC" : "PRIVATE");
                   setFile(null);
                   setPrepared(null);
                   if (fileInputRef.current) fileInputRef.current.value = "";
@@ -201,13 +209,18 @@ export function MediaUploader() {
               Quyền xem
               <select
                 value={visibility}
-                disabled={busy}
+                disabled={busy || folder === "avatars"}
                 onChange={(event) => setVisibility(event.target.value as MediaVisibility)}
                 className="mt-2 h-12 w-full rounded-sm border-[3px] border-line bg-surface px-3.5 text-sm font-semibold text-ink shadow-[3px_3px_0_var(--ds-shadow)] outline-none transition-[transform,box-shadow] focus:-translate-x-0.5 focus:-translate-y-0.5 focus:shadow-[5px_5px_0_var(--ds-shadow)]"
               >
                 <option value="PRIVATE">Riêng tư</option>
                 <option value="PUBLIC">Công khai</option>
               </select>
+              {folder === "avatars" ? (
+                <span className="mt-2 block text-xs font-normal leading-5 text-muted">
+                  Ảnh đại diện luôn công khai và sẽ thay ảnh đang hiển thị sau khi xác minh.
+                </span>
+              ) : null}
             </label>
           </div>
 

@@ -54,8 +54,8 @@ export type Database = {
           display_name: string;
           headline: string;
           description: string;
-          avatar_url: string | null;
-          background_image_url: string | null;
+          avatar_media_id: string | null;
+          background_media_id: string | null;
           theme: Json;
           social_links: Json;
           is_public: boolean;
@@ -67,8 +67,8 @@ export type Database = {
           display_name?: string;
           headline?: string;
           description?: string;
-          avatar_url?: string | null;
-          background_image_url?: string | null;
+          avatar_media_id?: string | null;
+          background_media_id?: string | null;
           theme?: Json;
           social_links?: Json;
           is_public?: boolean;
@@ -238,7 +238,6 @@ export type Database = {
           status: Database["public"]["Enums"]["media_status"];
           visibility: Database["public"]["Enums"]["media_visibility"];
           requested_visibility: Database["public"]["Enums"]["media_visibility"];
-          public_url: string | null;
           failure_reason: string | null;
           expires_at: string | null;
           verified_at: string | null;
@@ -259,7 +258,6 @@ export type Database = {
           status?: Database["public"]["Enums"]["media_status"];
           visibility?: Database["public"]["Enums"]["media_visibility"];
           requested_visibility?: Database["public"]["Enums"]["media_visibility"];
-          public_url?: string | null;
           failure_reason?: string | null;
           expires_at?: string | null;
           verified_at?: string | null;

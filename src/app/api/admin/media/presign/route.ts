@@ -31,6 +31,8 @@ export async function POST(request: Request) {
   }
 
   try {
+    const requestedVisibility =
+      parsed.data.folder === "avatars" ? "PUBLIC" : parsed.data.visibility;
     const mediaId = crypto.randomUUID();
     const objectKey = createStagingObjectKey({
       mediaId,
@@ -55,7 +57,7 @@ export async function POST(request: Request) {
       folder: parsed.data.folder,
       status: "PENDING",
       visibility: "PRIVATE",
-      requested_visibility: parsed.data.visibility,
+      requested_visibility: requestedVisibility,
       expires_at: new Date(Date.now() + signedUpload.expiresIn * 1000).toISOString(),
       uploaded_by: admin.user.id,
     });

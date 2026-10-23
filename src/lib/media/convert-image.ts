@@ -71,31 +71,46 @@ export async function prepareMediaFile(
     );
     const width = Math.max(1, Math.round(bitmap.width * scale));
     const height = Math.max(1, Math.round(bitmap.height * scale));
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
+    let encode: (quality: number) => Promise<Blob>;
 
-    const context = canvas.getContext("2d", { alpha: true });
-    if (!context) throw new Error("Không thể khởi tạo bộ xử lý ảnh.");
-
-    context.imageSmoothingEnabled = true;
-    context.imageSmoothingQuality = "high";
-    context.drawImage(bitmap, 0, 0, width, height);
-
-    const encode = (quality: number) =>
-      new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob(
-          (result) => {
-            if (!result || result.type !== WEBP_MIME_TYPE) {
-              reject(new Error("Trình duyệt không hỗ trợ xuất ảnh WebP."));
-              return;
-            }
-            resolve(result);
-          },
-          WEBP_MIME_TYPE,
-          quality,
-        );
-      });
+    if (typeof OffscreenCanvas !== "undefined") {
+      const canvas = new OffscreenCanvas(width, height);
+      const context = canvas.getContext("2d", { alpha: true });
+      if (!context) throw new Error("Không thể khởi tạo bộ xử lý ảnh.");
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = "high";
+      context.drawImage(bitmap, 0, 0, width, height);
+      encode = (quality) =>
+        canvas.convertToBlob({ type: WEBP_MIME_TYPE, quality }).then((result) => {
+          if (result.type !== WEBP_MIME_TYPE) {
+            throw new Error("Trình duyệt không hỗ trợ xuất ảnh WebP.");
+          }
+          return result;
+        });
+    } else {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext("2d", { alpha: true });
+      if (!context) throw new Error("Không thể khởi tạo bộ xử lý ảnh.");
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = "high";
+      context.drawImage(bitmap, 0, 0, width, height);
+      encode = (quality) =>
+        new Promise<Blob>((resolve, reject) => {
+          canvas.toBlob(
+            (result) => {
+              if (!result || result.type !== WEBP_MIME_TYPE) {
+                reject(new Error("Trình duyệt không hỗ trợ xuất ảnh WebP."));
+                return;
+              }
+              resolve(result);
+            },
+            WEBP_MIME_TYPE,
+            quality,
+          );
+        });
+    }
 
     const minimumQuality = 0.5;
     const targetBytes = Math.min(profile.maxBytes, source.size);

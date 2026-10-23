@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { createSignedDownloadUrl } from "@/lib/r2/presign";
+import { getPublicMediaUrl } from "@/lib/media/public-url";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 type Context = { params: Promise<{ id: string }> };
@@ -26,9 +26,7 @@ export async function GET(_request: Request, { params }: Context) {
     return NextResponse.json({ error: "Không tìm thấy media công khai." }, { status: 404 });
   }
 
-  const downloadUrl = await createSignedDownloadUrl(media.object_key);
-  return new NextResponse(null, {
-    status: 302,
-    headers: { Location: downloadUrl, "Cache-Control": "public, max-age=300" },
-  });
+  const response = NextResponse.redirect(getPublicMediaUrl(media.object_key), 308);
+  response.headers.set("Cache-Control", "public, max-age=31536000, immutable");
+  return response;
 }

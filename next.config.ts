@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    formats: ["image/webp"],
+    minimumCacheTTL: 86400,
+    qualities: [75, 76, 82],
     remotePatterns: [
       {
         protocol: "https",
@@ -19,7 +22,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "**.r2.dev",
+        hostname: "media.vmtshop.tech",
+        port: "",
+        pathname: "/**",
+        search: "",
       },
     ],
   },

@@ -11,7 +11,9 @@ export const demoSiteSettings: SiteSettings = {
   headline: "Ghi lại điều hữu ích. Chia sẻ điều đáng nhớ.",
   description:
     "Một góc nhỏ dành cho ghi chú công nghệ, tài nguyên thực hành và những liên kết mình thường xuyên sử dụng.",
+  avatarMediaId: null,
   avatarUrl: null,
+  backgroundMediaId: null,
   backgroundImageUrl: null,
   theme: { accent: "#5b5cf0", radius: "rounded", mode: "light" },
   socialLinks: [
@@ -252,8 +254,8 @@ export const demoHomeBlocks: PageBlock[] = [
     name: "Ghi chú nổi bật",
     content: {
       title: "Ghi chú nổi bật",
-      description: "Một vài bài được ghim để bạn bắt đầu nhanh.",
-      limit: 3,
+      description: "4 ghi chú công khai được ghim gần nhất.",
+      limit: 4,
     },
     styles: {},
     position: 1,

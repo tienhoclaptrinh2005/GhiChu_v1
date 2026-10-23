@@ -6,6 +6,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { getR2Env } from "@/lib/env";
 import {
   PDF_MIME_TYPE,
+  PRIVATE_MEDIA_CACHE_CONTROL,
   WEBP_MIME_TYPE,
   getUploadLimitBytes,
   mediaProfiles,
@@ -53,7 +54,7 @@ export async function createSignedUploadUrl(input: {
     throw new Error(`File vượt giới hạn ${Math.floor(maxBytes / 1024 / 1024)} MB của mục này.`);
   }
 
-  const cacheControl = "private, max-age=0, no-store";
+  const cacheControl = PRIVATE_MEDIA_CACHE_CONTROL;
   const uploadUrl = await getSignedUrl(
     getR2Client(),
     new PutObjectCommand({

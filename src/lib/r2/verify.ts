@@ -11,9 +11,11 @@ import { getR2Env } from "@/lib/env";
 import {
   PDF_MIME_TYPE,
   WEBP_MIME_TYPE,
+  getReadyMediaCacheControl,
   getUploadLimitBytes,
   mediaProfiles,
   type MediaFolder,
+  type MediaVisibility,
 } from "@/lib/media/config";
 import { isPdf, isWebp, readWebpDimensions } from "@/lib/media/webp";
 import { getR2Client } from "@/lib/r2/client";
@@ -114,6 +116,7 @@ export async function promoteR2Object(input: {
   mediaId: string;
   contentType: string;
   sourceEtag: string | null;
+  visibility: MediaVisibility;
 }) {
   const env = getR2Env();
   await getR2Client().send(
@@ -125,7 +128,27 @@ export async function promoteR2Object(input: {
       MetadataDirective: "REPLACE",
       Metadata: { "media-id": input.mediaId },
       ContentType: input.contentType,
-      CacheControl: "private, max-age=0, no-store",
+      CacheControl: getReadyMediaCacheControl(input.visibility),
+    }),
+  );
+}
+
+export async function updateR2ObjectCachePolicy(input: {
+  objectKey: string;
+  mediaId: string;
+  contentType: string;
+  visibility: MediaVisibility;
+}) {
+  const env = getR2Env();
+  await getR2Client().send(
+    new CopyObjectCommand({
+      Bucket: env.R2_BUCKET_NAME,
+      CopySource: `${env.R2_BUCKET_NAME}/${input.objectKey}`,
+      Key: input.objectKey,
+      MetadataDirective: "REPLACE",
+      Metadata: { "media-id": input.mediaId },
+      ContentType: input.contentType,
+      CacheControl: getReadyMediaCacheControl(input.visibility),
     }),
   );
 }

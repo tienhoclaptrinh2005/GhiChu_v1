@@ -2,6 +2,17 @@ export type NoteStatus = "DRAFT" | "PRIVATE" | "PUBLIC" | "ARCHIVED";
 export type PageStatus = "DRAFT" | "PUBLISHED";
 export type MediaStatus = "PENDING" | "READY" | "FAILED" | "DELETED";
 export type MediaVisibility = "PUBLIC" | "PRIVATE";
+export type QuickLinkIcon =
+  | "link"
+  | "message-circle"
+  | "notebook-tabs"
+  | "folder-tree"
+  | "search"
+  | "send"
+  | "mail"
+  | "users"
+  | "sparkles";
+export type QuickLinkTone = "blue" | "amber" | "pink" | "green";
 export type BlockType =
   | "TEXT"
   | "HEADING"
@@ -26,7 +37,9 @@ export interface SiteSettings {
   displayName: string;
   headline: string;
   description: string;
+  avatarMediaId: string | null;
   avatarUrl: string | null;
+  backgroundMediaId: string | null;
   backgroundImageUrl: string | null;
   theme: {
     accent: string;
@@ -38,6 +51,38 @@ export interface SiteSettings {
     href: string;
     icon: string;
   }>;
+}
+
+export interface ProfileMediaOption {
+  id: string;
+  originalName: string;
+  altText: string | null;
+  width: number | null;
+  height: number | null;
+  sizeBytes: number;
+  folder: "avatars" | "banners";
+}
+
+export interface SiteSettingsEditorData {
+  settings: SiteSettings;
+  avatars: ProfileMediaOption[];
+  banners: ProfileMediaOption[];
+}
+
+export interface QuickLinkItem {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  icon: QuickLinkIcon;
+  tone: QuickLinkTone;
+  newTab: boolean;
+}
+
+export interface QuickLinksEditorData {
+  blockId: string | null;
+  blockName: string;
+  items: QuickLinkItem[];
 }
 
 export interface PageBlock {
@@ -70,6 +115,18 @@ export interface NoteSummary {
   updatedAt: string;
   readingTimeMinutes: number;
   categories: CategorySummary[];
+}
+
+export interface AdminNoteListItem {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  status: NoteStatus;
+  isPinned: boolean;
+  publishedAt: string | null;
+  updatedAt: string;
+  readingTimeMinutes: number;
 }
 
 export interface TiptapMark {

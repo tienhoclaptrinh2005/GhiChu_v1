@@ -14,6 +14,14 @@ export const SUPPORTED_SOURCE_IMAGE_TYPES = [
 
 export const WEBP_MIME_TYPE = "image/webp";
 export const PDF_MIME_TYPE = "application/pdf";
+export const PUBLIC_MEDIA_CACHE_CONTROL = "public, max-age=31536000, immutable";
+export const PRIVATE_MEDIA_CACHE_CONTROL = "private, max-age=0, no-store";
+
+export function getReadyMediaCacheControl(visibility: MediaVisibility) {
+  return visibility === "PUBLIC"
+    ? PUBLIC_MEDIA_CACHE_CONTROL
+    : PRIVATE_MEDIA_CACHE_CONTROL;
+}
 
 export const mediaProfiles: Record<
   MediaFolder,
@@ -28,10 +36,10 @@ export const mediaProfiles: Record<
 > = {
   avatars: {
     label: "Ảnh đại diện",
-    maxBytes: 2 * 1024 * 1024,
-    maxWidth: 1024,
-    maxHeight: 1024,
-    webpQuality: 0.84,
+    maxBytes: 1024 * 1024,
+    maxWidth: 512,
+    maxHeight: 512,
+    webpQuality: 0.82,
     acceptsPdf: false,
   },
   banners: {
