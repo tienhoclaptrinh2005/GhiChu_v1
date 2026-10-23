@@ -1,13 +1,13 @@
 import { BlockRenderer } from "@/components/public/block-renderer";
 import { ProfileHero } from "@/components/public/profile-hero";
-import { getPublishedNotes } from "@/features/notes/queries";
+import { getPinnedPublishedNotes } from "@/features/notes/queries";
 import { getHomeBlocks, getSiteSettings } from "@/features/site/queries";
 
 export default async function HomePage() {
   const [settings, blocks, notes] = await Promise.all([
     getSiteSettings(),
     getHomeBlocks(),
-    getPublishedNotes(6),
+    getPinnedPublishedNotes(4),
   ]);
 
   return (

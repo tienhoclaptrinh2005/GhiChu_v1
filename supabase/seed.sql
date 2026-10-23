@@ -57,7 +57,7 @@ values
     '10000000-0000-4000-8000-000000000001',
     'NOTE_LIST',
     'Ghi chú nổi bật',
-    '{"title":"Ghi chú nổi bật","description":"Một vài bài được ghim để bạn bắt đầu nhanh.","limit":3}'::jsonb,
+    '{"title":"Ghi chú nổi bật","description":"4 ghi chú công khai được ghim gần nhất.","limit":4}'::jsonb,
     '{}'::jsonb,
     1,
     true

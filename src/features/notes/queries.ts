@@ -1,6 +1,7 @@
 import "server-only";
 
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 
 import { demoCategories, demoNoteDetails, demoNotes } from "@/lib/demo-data";
 import { isSupabaseConfigured } from "@/lib/env";
@@ -64,89 +65,152 @@ async function getCategoryMap(noteIds: string[]) {
   return result;
 }
 
-export const getPublishedNotes = cache(
-  async (limit = 24): Promise<NoteSummary[]> => {
-    if (!isSupabaseConfigured()) return demoNotes.slice(0, limit);
+async function loadPublishedNotes(limit = 24): Promise<NoteSummary[]> {
+  if (!isSupabaseConfigured()) return demoNotes.slice(0, limit);
 
-    const supabase = createPublicSupabaseClient();
-    const { data, error } = await supabase
-      .from("notes")
-      .select(
-        "id, title, slug, excerpt, status, is_pinned, published_at, updated_at, reading_time_minutes",
+  const supabase = createPublicSupabaseClient();
+  const { data, error } = await supabase
+    .from("notes")
+    .select(
+      "id, title, slug, excerpt, status, is_pinned, published_at, updated_at, reading_time_minutes",
+    )
+    .eq("status", "PUBLIC")
+    .is("deleted_at", null)
+    .order("is_pinned", { ascending: false })
+    .order("published_at", { ascending: false })
+    .limit(Math.min(Math.max(limit, 1), 100));
+
+  if (error) throw error;
+
+  const categoriesByNote = await getCategoryMap((data ?? []).map((note) => note.id));
+
+  return (data ?? []).map((note) => ({
+    id: note.id,
+    title: note.title,
+    slug: note.slug,
+    excerpt: note.excerpt,
+    status: note.status,
+    isPinned: note.is_pinned,
+    publishedAt: note.published_at,
+    updatedAt: note.updated_at,
+    readingTimeMinutes: note.reading_time_minutes,
+    categories: categoriesByNote.get(note.id) ?? [],
+  }));
+}
+
+const getCachedPublishedNotes = unstable_cache(
+  loadPublishedNotes,
+  ["published-notes-v1"],
+  { revalidate: 300, tags: ["published-notes"] },
+);
+
+export const getPublishedNotes = cache(getCachedPublishedNotes);
+
+async function loadPinnedPublishedNotes(limit = 4): Promise<NoteSummary[]> {
+  const safeLimit = Math.min(Math.max(limit, 1), 4);
+  if (!isSupabaseConfigured()) {
+    return demoNotes
+      .filter((note) => note.status === "PUBLIC" && note.isPinned)
+      .sort((first, second) =>
+        (second.publishedAt ?? second.updatedAt).localeCompare(
+          first.publishedAt ?? first.updatedAt,
+        ),
       )
-      .eq("status", "PUBLIC")
-      .is("deleted_at", null)
-      .order("is_pinned", { ascending: false })
-      .order("published_at", { ascending: false })
-      .limit(Math.min(Math.max(limit, 1), 100));
+      .slice(0, safeLimit);
+  }
 
-    if (error) throw error;
+  const supabase = createPublicSupabaseClient();
+  const { data, error } = await supabase
+    .from("notes")
+    .select(
+      "id, title, slug, excerpt, status, is_pinned, published_at, updated_at, reading_time_minutes",
+    )
+    .eq("status", "PUBLIC")
+    .eq("is_pinned", true)
+    .is("deleted_at", null)
+    .order("published_at", { ascending: false, nullsFirst: false })
+    .order("updated_at", { ascending: false })
+    .limit(safeLimit);
 
-    const categoriesByNote = await getCategoryMap((data ?? []).map((note) => note.id));
+  if (error) throw error;
 
-    return (data ?? []).map((note) => ({
-      id: note.id,
-      title: note.title,
-      slug: note.slug,
-      excerpt: note.excerpt,
-      status: note.status,
-      isPinned: note.is_pinned,
-      publishedAt: note.published_at,
-      updatedAt: note.updated_at,
-      readingTimeMinutes: note.reading_time_minutes,
-      categories: categoriesByNote.get(note.id) ?? [],
-    }));
-  },
+  const categoriesByNote = await getCategoryMap((data ?? []).map((note) => note.id));
+  return (data ?? []).map((note) => ({
+    id: note.id,
+    title: note.title,
+    slug: note.slug,
+    excerpt: note.excerpt,
+    status: note.status,
+    isPinned: note.is_pinned,
+    publishedAt: note.published_at,
+    updatedAt: note.updated_at,
+    readingTimeMinutes: note.reading_time_minutes,
+    categories: categoriesByNote.get(note.id) ?? [],
+  }));
+}
+
+const getCachedPinnedPublishedNotes = unstable_cache(
+  loadPinnedPublishedNotes,
+  ["pinned-published-notes-v1"],
+  { revalidate: 300, tags: ["published-notes"] },
 );
 
-export const getPublishedNoteBySlug = cache(
-  async (slug: string): Promise<NoteDetail | null> => {
-    if (!isSupabaseConfigured()) return demoNoteDetails[slug] ?? null;
+export const getPinnedPublishedNotes = cache(getCachedPinnedPublishedNotes);
 
-    const supabase = createPublicSupabaseClient();
-    const { data: note, error } = await supabase
-      .from("notes")
-      .select("*")
-      .eq("slug", slug)
-      .eq("status", "PUBLIC")
-      .is("deleted_at", null)
-      .maybeSingle();
+async function loadPublishedNoteBySlug(slug: string): Promise<NoteDetail | null> {
+  if (!isSupabaseConfigured()) return demoNoteDetails[slug] ?? null;
 
-    if (error) throw error;
-    if (!note?.published_version_id) return null;
+  const supabase = createPublicSupabaseClient();
+  const { data: note, error } = await supabase
+    .from("notes")
+    .select("*")
+    .eq("slug", slug)
+    .eq("status", "PUBLIC")
+    .is("deleted_at", null)
+    .maybeSingle();
 
-    const { data: version, error: versionError } = await supabase
-      .from("note_versions")
-      .select("version_number, content")
-      .eq("id", note.published_version_id)
-      .eq("note_id", note.id)
-      .maybeSingle();
+  if (error) throw error;
+  if (!note?.published_version_id) return null;
 
-    if (versionError) throw versionError;
-    if (!version) return null;
+  const { data: version, error: versionError } = await supabase
+    .from("note_versions")
+    .select("version_number, content")
+    .eq("id", note.published_version_id)
+    .eq("note_id", note.id)
+    .maybeSingle();
 
-    const categoriesByNote = await getCategoryMap([note.id]);
+  if (versionError) throw versionError;
+  if (!version) return null;
 
-    return {
-      id: note.id,
-      title: note.title,
-      slug: note.slug,
-      excerpt: note.excerpt,
-      status: note.status,
-      isPinned: note.is_pinned,
-      publishedAt: note.published_at,
-      updatedAt: note.updated_at,
-      readingTimeMinutes: note.reading_time_minutes,
-      categories: categoriesByNote.get(note.id) ?? [],
-      content: asTiptapDocument(version.content),
-      versionNumber: version.version_number,
-      seoTitle: note.seo_title,
-      seoDescription: note.seo_description,
-    };
-  },
+  const categoriesByNote = await getCategoryMap([note.id]);
+
+  return {
+    id: note.id,
+    title: note.title,
+    slug: note.slug,
+    excerpt: note.excerpt,
+    status: note.status,
+    isPinned: note.is_pinned,
+    publishedAt: note.published_at,
+    updatedAt: note.updated_at,
+    readingTimeMinutes: note.reading_time_minutes,
+    categories: categoriesByNote.get(note.id) ?? [],
+    content: asTiptapDocument(version.content),
+    versionNumber: version.version_number,
+    seoTitle: note.seo_title,
+    seoDescription: note.seo_description,
+  };
+}
+
+const getCachedPublishedNoteBySlug = unstable_cache(
+  loadPublishedNoteBySlug,
+  ["published-note-v1"],
+  { revalidate: 300, tags: ["published-notes"] },
 );
 
-export const getCategories = cache(async (): Promise<CategorySummary[]> => {
+export const getPublishedNoteBySlug = cache(getCachedPublishedNoteBySlug);
+
+async function loadCategories(): Promise<CategorySummary[]> {
   if (!isSupabaseConfigured()) return demoCategories;
 
   const supabase = createPublicSupabaseClient();
@@ -176,7 +240,15 @@ export const getCategories = cache(async (): Promise<CategorySummary[]> => {
     color: category.color,
     noteCount: counts.get(category.id) ?? 0,
   }));
-});
+}
+
+const getCachedCategories = unstable_cache(
+  loadCategories,
+  ["public-categories-v1"],
+  { revalidate: 300, tags: ["published-notes", "categories"] },
+);
+
+export const getCategories = cache(getCachedCategories);
 
 export async function searchPublishedNotes(query: string) {
   const normalized = query.trim().toLocaleLowerCase("vi-VN").slice(0, 100);
