@@ -1,11 +1,12 @@
 import "server-only";
 
 import { redirect } from "next/navigation";
+import { cache } from "react";
 
 import { getServerEnv, isSupabaseConfigured } from "@/lib/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-export async function getAdminUser() {
+export const getAdminUser = cache(async function getAdminUser() {
   if (!isSupabaseConfigured()) return null;
 
   const supabase = await createServerSupabaseClient();
@@ -28,7 +29,7 @@ export async function getAdminUser() {
   if (!profile || profile.role !== "ADMIN") return null;
 
   return { user, profile };
-}
+});
 
 export async function requireAdmin() {
   const admin = await getAdminUser();

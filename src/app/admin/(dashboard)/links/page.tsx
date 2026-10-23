@@ -1,2 +1,17 @@
-import { CollectionPlaceholder } from "@/components/admin/collection-placeholder";
-export default function AdminLinksPage() { return <CollectionPlaceholder title="Nút liên kết" description="Quản lý các nút nội bộ và liên kết ngoài trên trang chủ." features={["Icon và màu có sẵn", "Mở tab mới hoặc hiện tại", "Nhân bản nhanh", "Kéo thả thứ tự"]} />; }
+import { QuickLinksForm } from "@/components/admin/quick-links-form";
+import { PageHeader } from "@/components/admin/page-header";
+import { getQuickLinksEditorData } from "@/features/admin/queries";
+
+export default async function AdminLinksPage() {
+  const data = await getQuickLinksEditorData();
+
+  return (
+    <div className="space-y-7">
+      <PageHeader
+        title="Liên kết nhanh"
+        description="Quản lý tên, mô tả, đường dẫn, biểu tượng, màu sắc và thứ tự các nút trên trang chủ."
+      />
+      <QuickLinksForm data={data} />
+    </div>
+  );
+}

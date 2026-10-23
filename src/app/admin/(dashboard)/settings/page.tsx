@@ -1,2 +1,17 @@
-import { CollectionPlaceholder } from "@/components/admin/collection-placeholder";
-export default function AdminSettingsPage() { return <CollectionPlaceholder title="Cài đặt website" description="Thông tin hồ sơ, theme, SEO và cấu hình vận hành chung." features={["Avatar và thông tin hồ sơ", "Màu sắc và bo góc", "Social links", "SEO và domain"]} />; }
+import { PageHeader } from "@/components/admin/page-header";
+import { SiteSettingsForm } from "@/components/admin/site-settings-form";
+import { getSiteSettingsEditorData } from "@/features/admin/queries";
+
+export default async function AdminSettingsPage() {
+  const data = await getSiteSettingsEditorData();
+
+  return (
+    <div className="space-y-8">
+      <PageHeader
+        title="Hồ sơ trang chủ"
+        description="Quản lý tên, thông tin chi tiết, một ảnh đại diện đang dùng, ảnh bìa và các kênh liên hệ hiển thị bên ngoài."
+      />
+      <SiteSettingsForm data={data} />
+    </div>
+  );
+}

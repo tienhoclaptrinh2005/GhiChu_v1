@@ -12,7 +12,7 @@
 ## Layout
 
 - Reading shell: `max-width: 768px`, căn giữa, một cột ở mọi breakpoint.
-- Profile hero: cover 160–192px dạng voxel landscape Sky/Grass/Dirt, theme toggle ở góc phải, avatar khối chồng mép cover, tên + verified mark, headline 3D nhẹ, mô tả và anchor xuống nội dung.
+- Profile hero: cover 160–192px dạng voxel landscape Sky/Grass/Dirt, theme toggle ở góc phải, avatar `object-contain` trong khung cỏ/đất nhiều lớp chồng mép cover, verified badge xanh dạng răng cưa đặt ngay cạnh tên, headline 3D nhẹ, mô tả, các kênh liên hệ công khai và anchor xuống nội dung.
 - Link stack: mỗi link cao tối thiểu 88px, khoảng cách 16px, icon khối vuông bên trái, cạnh terrain Grass/Dirt, nhãn ở giữa, affordance bên phải.
 - Nội dung sau link stack dùng card/section hiện có; danh sách ghi chú tối đa 2 cột trong shell.
 
@@ -29,4 +29,7 @@
 - 320–639px: padding 16px, icon khối 48px, nội dung link căn giữa và không tràn ngang.
 - 640px+: padding 24px, hero/heading tăng một cấp, note list 2 cột.
 - Avatar có alt mô tả; cover trang trí có alt rỗng; icon trang trí dùng `aria-hidden`.
+- Avatar và cover dùng ảnh responsive có vùng kích thước cố định để tránh layout shift; avatar chỉ có một media đang hoạt động.
+- Không áp dụng `image-rendering: pixelated` cho logo/avatar thật; chất voxel nằm ở frame để giữ ảnh rõ nét.
+- Khu vực cuối trang chỉ hiển thị tối đa 4 ghi chú vừa công khai, vừa được ghim, mới nhất trước.
 - Hỗ trợ dark mode bằng semantic tokens, không gắn màu nền canvas cứng.

@@ -2,6 +2,7 @@ import {
   ArrowRight,
   ExternalLink,
   FolderTree,
+  Link2,
   Mail,
   Megaphone,
   MessageCircle,
@@ -23,12 +24,9 @@ function text(value: JsonValue | undefined, fallback = "") {
   return typeof value === "string" ? value : fallback;
 }
 
-function number(value: JsonValue | undefined, fallback: number) {
-  return typeof value === "number" ? value : fallback;
-}
-
 function icon(name: string) {
   let Icon = NotebookTabs;
+  if (name === "link") Icon = Link2;
   if (name === "message-circle") Icon = MessageCircle;
   if (name === "folder-tree") Icon = FolderTree;
   if (name === "search") Icon = Search;
@@ -82,7 +80,11 @@ function LinkButtons({ block }: { block: PageBlock }) {
           if (!item || typeof item !== "object" || Array.isArray(item)) return null;
           const title = text(item.title, "Liên kết");
           const href = text(item.href, "#");
-          const external = item.external === true || isExternalScheme(href);
+          const external = isExternalScheme(href);
+          const newTab =
+            isWebUrl(href) &&
+            (item.newTab === true ||
+              (typeof item.newTab !== "boolean" && item.external === true));
           const description = text(item.description);
           const content = (
             <>
@@ -120,8 +122,8 @@ function LinkButtons({ block }: { block: PageBlock }) {
             <a
               key={`${title}-${index}`}
               href={href}
-              target={isWebUrl(href) ? "_blank" : undefined}
-              rel={isWebUrl(href) ? "noreferrer" : undefined}
+              target={newTab ? "_blank" : undefined}
+              rel={newTab ? "noreferrer" : undefined}
               className={className}
             >
               {content}
@@ -207,7 +209,7 @@ export function BlockRenderer({ block, notes }: { block: PageBlock; notes: NoteS
   }
 
   if (block.type === "NOTE_LIST") {
-    const limit = number(block.content.limit, 3);
+    const pinnedNotes = notes.filter((note) => note.isPinned).slice(0, 4);
     return (
       <section>
         <div className="mb-5 flex items-end justify-between gap-5">
@@ -222,9 +224,15 @@ export function BlockRenderer({ block, notes }: { block: PageBlock; notes: NoteS
             Xem tất cả →
           </Link>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2">
-          {notes.slice(0, limit).map((note) => <NoteCard key={note.id} note={note} />)}
-        </div>
+        {pinnedNotes.length ? (
+          <div className="grid gap-5 sm:grid-cols-2">
+            {pinnedNotes.map((note) => <NoteCard key={note.id} note={note} />)}
+          </div>
+        ) : (
+          <div className="empty-state px-5 py-8 text-center text-sm text-muted">
+            Chưa có ghi chú công khai nào được ghim.
+          </div>
+        )}
       </section>
     );
   }
