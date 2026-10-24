@@ -10,7 +10,6 @@ import {
 import Image from "next/image";
 
 import { ThemeToggle } from "@/components/theme/theme-toggle";
-import { Badge } from "@/components/ui/badge";
 import { getInitials } from "@/lib/utils";
 import type { SiteSettings } from "@/types/domain";
 
@@ -63,8 +62,14 @@ export function ProfileHero({ settings }: { settings: SiteSettings }) {
           />
         ) : null}
         <div className="absolute inset-0 z-[2] bg-[linear-gradient(180deg,transparent_45%,rgba(7,21,29,0.2))]" />
-        <span className="grass-block absolute bottom-4 left-6 z-[3] size-12" aria-hidden="true" />
-        <span className="voxel-icon absolute right-24 top-8 z-[3] grid size-8 place-items-center bg-accent text-[#10212b]" aria-hidden="true">
+        <span
+          className="grass-block absolute bottom-4 left-6 z-[3] size-12"
+          aria-hidden="true"
+        />
+        <span
+          className="voxel-icon absolute right-24 top-8 z-[3] grid size-8 place-items-center bg-accent text-[#10212b]"
+          aria-hidden="true"
+        >
           <Box className="size-4" />
         </span>
         <ThemeToggle className="absolute right-5 top-5 z-10 sm:right-6 sm:top-6" />
@@ -91,19 +96,16 @@ export function ProfileHero({ settings }: { settings: SiteSettings }) {
           </div>
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-          <p className="font-display text-xl font-bold sm:text-2xl">{settings.displayName}</p>
-          <VerifiedBadge />
+        <div className="mt-6 flex justify-center">
+          <div className="inline-flex max-w-full items-center justify-center gap-2">
+            <h1 className="voxel-title min-w-0 text-balance text-2xl leading-[1.18] sm:text-4xl">
+              {settings.displayName}
+            </h1>
+            <VerifiedBadge />
+          </div>
         </div>
 
-        <Badge tone="amber" className="mt-3">
-          Personal knowledge hub
-        </Badge>
-
-        <h1 className="voxel-title mx-auto mt-6 max-w-2xl text-balance text-2xl leading-[1.18] sm:text-4xl">
-          {settings.headline}
-        </h1>
-        <p className="mx-auto mt-4 max-w-xl text-pretty text-sm leading-6 text-muted sm:text-base sm:leading-7">
+        <p className="mx-auto mt-16 max-w-xl text-pretty text-sm leading-6 text-muted sm:text-base sm:leading-7">
           {settings.description}
         </p>
 
@@ -125,7 +127,9 @@ export function ProfileHero({ settings }: { settings: SiteSettings }) {
                 >
                   <Icon className="size-4" aria-hidden="true" />
                   {item.label}
-                  {webUrl ? <ExternalLink className="size-3" aria-hidden="true" /> : null}
+                  {webUrl ? (
+                    <ExternalLink className="size-3" aria-hidden="true" />
+                  ) : null}
                 </a>
               );
             })}
