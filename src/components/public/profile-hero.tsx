@@ -1,28 +1,10 @@
-import {
-  ArrowDown,
-  Box,
-  ExternalLink,
-  Link2,
-  Mail,
-  Send,
-  UsersRound,
-} from "lucide-react";
+import { Box } from "lucide-react";
 import Image from "next/image";
 
+import { VoxelName } from "@/components/effects/voxel-name";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { getInitials } from "@/lib/utils";
 import type { SiteSettings } from "@/types/domain";
-
-function socialIcon(name: string) {
-  if (name === "facebook") return UsersRound;
-  if (name === "send") return Send;
-  if (name === "mail") return Mail;
-  return Link2;
-}
-
-function isWebUrl(href: string) {
-  return /^https?:\/\//i.test(href);
-}
 
 function VerifiedBadge() {
   return (
@@ -98,9 +80,7 @@ export function ProfileHero({ settings }: { settings: SiteSettings }) {
 
         <div className="mt-6 flex justify-center">
           <div className="inline-flex max-w-full items-center justify-center gap-2">
-            <h1 className="voxel-title min-w-0 text-balance text-2xl leading-[1.18] sm:text-4xl">
-              {settings.displayName}
-            </h1>
+            <VoxelName name={settings.displayName} />
             <VerifiedBadge />
           </div>
         </div>
@@ -108,41 +88,6 @@ export function ProfileHero({ settings }: { settings: SiteSettings }) {
         <p className="mx-auto mt-16 max-w-xl text-pretty text-sm leading-6 text-muted sm:text-base sm:leading-7">
           {settings.description}
         </p>
-
-        {settings.socialLinks.length ? (
-          <nav
-            aria-label="Kênh liên hệ"
-            className="mx-auto mt-5 flex max-w-xl flex-wrap justify-center gap-2"
-          >
-            {settings.socialLinks.slice(0, 8).map((item) => {
-              const Icon = socialIcon(item.icon);
-              const webUrl = isWebUrl(item.href);
-              return (
-                <a
-                  key={`${item.label}-${item.href}`}
-                  href={item.href}
-                  target={webUrl ? "_blank" : undefined}
-                  rel={webUrl ? "noreferrer" : undefined}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-sm border-[3px] border-line bg-surface-alt px-3 text-xs font-bold text-ink shadow-[2px_2px_0_var(--ds-shadow)] transition-[transform,box-shadow,background-color] duration-150 hover:-translate-y-0.5 hover:bg-sky hover:shadow-[3px_3px_0_var(--ds-shadow)]"
-                >
-                  <Icon className="size-4" aria-hidden="true" />
-                  {item.label}
-                  {webUrl ? (
-                    <ExternalLink className="size-3" aria-hidden="true" />
-                  ) : null}
-                </a>
-              );
-            })}
-          </nav>
-        ) : null}
-
-        <a
-          href="#noi-dung"
-          className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-sm border-[3px] border-line bg-forest px-4 text-sm font-bold text-[var(--ds-on-forest)] shadow-[3px_3px_0_var(--ds-shadow),inset_0_-3px_0_color-mix(in_srgb,var(--ds-shadow)_18%,transparent)] transition-[transform,box-shadow,background-color] duration-150 hover:-translate-y-0.5 hover:bg-accent hover:text-[var(--ds-on-accent)] hover:shadow-[5px_5px_0_var(--ds-shadow)]"
-        >
-          Chọn một liên kết bên dưới
-          <ArrowDown className="size-4" aria-hidden="true" />
-        </a>
       </div>
     </section>
   );

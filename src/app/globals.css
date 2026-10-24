@@ -1,5 +1,41 @@
 @import "tailwindcss";
 
+@property --voxel-sky-tone {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #79d1ff;
+}
+
+@property --voxel-grass-tone {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #8bdf54;
+}
+
+@property --voxel-forest-tone {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #3e9d43;
+}
+
+@property --voxel-dirt-tone {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #a86a35;
+}
+
+@property --voxel-cloud-tone {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(255, 255, 255, 0.9);
+}
+
+@property --voxel-cloud-soft-tone {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(255, 255, 255, 0.78);
+}
+
 @theme inline {
   --font-sans: var(--font-body);
   --font-display: var(--font-retro);
@@ -108,6 +144,7 @@ html {
   min-width: 320px;
   scroll-behavior: smooth;
   background: var(--ds-canvas);
+  transition: background-color 480ms ease;
 }
 
 body {
@@ -125,6 +162,9 @@ body {
   color: var(--ds-ink);
   font-family: var(--font-body), "Segoe UI", sans-serif;
   text-rendering: optimizeLegibility;
+  transition:
+    background-color 480ms ease,
+    color 320ms ease;
 }
 
 body::before {
@@ -139,6 +179,14 @@ body::before {
     linear-gradient(var(--ds-surface), var(--ds-surface)) calc(7vw + 1rem) 6rem / 3rem 1rem no-repeat,
     linear-gradient(var(--ds-surface), var(--ds-surface)) 82vw 14rem / 6rem 1.5rem no-repeat,
     linear-gradient(var(--ds-surface), var(--ds-surface)) calc(82vw + 1rem) 13rem / 3rem 1rem no-repeat;
+  transition:
+    opacity 480ms ease,
+    filter 480ms ease;
+}
+
+[data-theme="dark"] body::before {
+  opacity: 0.26;
+  filter: brightness(0.78) saturate(0.72);
 }
 
 body::after {
@@ -229,7 +277,11 @@ h1 {
   background: var(--ds-surface);
   box-shadow: 3px 3px 0 var(--ds-shadow);
   color: var(--ds-ink);
-  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background-color 320ms ease,
+    color 320ms ease;
 }
 
 .theme-toggle:hover {
@@ -239,16 +291,33 @@ h1 {
   color: var(--ds-on-accent);
 }
 
+.theme-icon-sun,
 .theme-icon-moon {
-  display: none;
+  grid-area: 1 / 1;
+  display: block;
+  transition:
+    opacity 260ms ease,
+    transform 320ms steps(5, end);
+}
+
+.theme-icon-sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.theme-icon-moon {
+  opacity: 0;
+  transform: rotate(-45deg) scale(0.65);
 }
 
 [data-theme="dark"] .theme-icon-sun {
-  display: none;
+  opacity: 0;
+  transform: rotate(45deg) scale(0.65);
 }
 
 [data-theme="dark"] .theme-icon-moon {
-  display: block;
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
 }
 
 .retro-label {
@@ -340,6 +409,121 @@ h1 {
   font-family: var(--font-body), sans-serif !important;
 }
 
+.falling-voxel-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+.falling-voxel-block {
+  position: absolute;
+  left: var(--voxel-left);
+  top: -2rem;
+  width: var(--voxel-size);
+  height: var(--voxel-size);
+  border: 2px solid color-mix(in srgb, var(--ds-line) 82%, transparent);
+  border-radius: 1px;
+  opacity: 0;
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--ds-shadow) 72%, transparent);
+  animation: voxel-block-fall var(--voxel-duration) linear var(--voxel-delay) infinite;
+  will-change: transform, opacity;
+}
+
+.falling-voxel-block--grass {
+  background: linear-gradient(
+    var(--ds-grass-bright) 0 30%,
+    var(--ds-dirt) 30% 76%,
+    var(--ds-dirt-deep) 76%
+  );
+}
+
+.falling-voxel-block--sky {
+  background: var(--ds-sky);
+}
+
+.falling-voxel-block--sun {
+  background: var(--ds-accent);
+}
+
+.falling-voxel-block--dirt {
+  background: var(--ds-dirt);
+}
+
+@keyframes voxel-block-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -8vh, 0) rotate(0deg);
+  }
+
+  10%,
+  82% {
+    opacity: var(--voxel-opacity);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--voxel-drift), 116vh, 0) rotate(var(--voxel-spin));
+  }
+}
+
+.pixel-burst-particle {
+  position: fixed;
+  z-index: 1200;
+  width: var(--burst-size);
+  height: var(--burst-size);
+  pointer-events: none;
+  border: 1px solid var(--ds-line);
+  box-shadow: 1px 1px 0 var(--ds-shadow);
+  animation: pixel-burst-pop 460ms steps(6, end) forwards;
+  will-change: transform, opacity;
+}
+
+.pixel-burst-particle--sun {
+  background: var(--ds-accent);
+}
+
+.pixel-burst-particle--sky {
+  background: var(--ds-sky);
+}
+
+.pixel-burst-particle--grass {
+  background: var(--ds-grass-bright);
+}
+
+.pixel-burst-particle--dirt {
+  background: var(--ds-dirt);
+}
+
+@keyframes pixel-burst-pop {
+  0% {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0) rotate(0deg) scale(0.65);
+  }
+
+  62% {
+    opacity: 1;
+    transform: translate3d(
+        calc(-50% + var(--burst-x)),
+        calc(-50% + var(--burst-y)),
+        0
+      )
+      rotate(var(--burst-rotation)) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(
+        calc(-50% + var(--burst-x)),
+        calc(-50% + var(--burst-fall-y)),
+        0
+      )
+      rotate(var(--burst-rotation)) scale(0.72);
+  }
+}
+
 /* Component-level voxel patterns. */
 .voxel-panel {
   position: relative;
@@ -358,6 +542,59 @@ h1 {
   text-shadow:
     2px 2px 0 var(--ds-title-shadow),
     4px 4px 0 color-mix(in srgb, var(--ds-shadow) 18%, transparent);
+}
+
+.voxel-name-assembly {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 0.28em;
+}
+
+.voxel-name-word {
+  display: inline-flex;
+}
+
+.voxel-name-piece {
+  --voxel-piece-x: -12px;
+  --voxel-piece-y: -8px;
+
+  display: inline-block;
+  opacity: 0;
+  animation: voxel-name-assemble 360ms steps(5, end) var(--voxel-piece-delay) both;
+  will-change: transform, opacity;
+}
+
+.voxel-name-piece:nth-child(4n + 2) {
+  --voxel-piece-x: 0;
+  --voxel-piece-y: -14px;
+}
+
+.voxel-name-piece:nth-child(4n + 3) {
+  --voxel-piece-x: 12px;
+  --voxel-piece-y: -7px;
+}
+
+.voxel-name-piece:nth-child(4n) {
+  --voxel-piece-x: 0;
+  --voxel-piece-y: 12px;
+}
+
+@keyframes voxel-name-assemble {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--voxel-piece-x), var(--voxel-piece-y), 0) scale(0.72);
+  }
+
+  72% {
+    opacity: 1;
+    transform: translate3d(2px, -2px, 0) scale(1.05);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
 }
 
 .voxel-icon {
@@ -410,10 +647,29 @@ h1 {
 }
 
 .voxel-landscape {
+  --voxel-sky-tone: #79d1ff;
+  --voxel-grass-tone: #8bdf54;
+  --voxel-forest-tone: #3e9d43;
+  --voxel-dirt-tone: #a86a35;
+  --voxel-cloud-tone: rgba(255, 255, 255, 0.9);
+  --voxel-cloud-soft-tone: rgba(255, 255, 255, 0.78);
+
   position: relative;
   isolation: isolate;
-  background:
-    linear-gradient(180deg, #79d1ff 0 64%, #8bdf54 64% 70%, #3e9d43 70% 76%, #a86a35 76% 100%);
+  background: linear-gradient(
+    180deg,
+    var(--voxel-sky-tone) 0 64%,
+    var(--voxel-grass-tone) 64% 70%,
+    var(--voxel-forest-tone) 70% 76%,
+    var(--voxel-dirt-tone) 76% 100%
+  );
+  transition:
+    --voxel-sky-tone 480ms ease,
+    --voxel-grass-tone 480ms ease,
+    --voxel-forest-tone 480ms ease,
+    --voxel-dirt-tone 480ms ease,
+    --voxel-cloud-tone 480ms ease,
+    --voxel-cloud-soft-tone 480ms ease;
 }
 
 .voxel-landscape::before {
@@ -424,12 +680,12 @@ h1 {
   width: 54px;
   height: 18px;
   content: "";
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--voxel-cloud-tone);
   box-shadow:
-    14px -9px 0 rgba(255, 255, 255, 0.9),
-    38px 0 0 rgba(255, 255, 255, 0.9),
-    min(66vw, 520px) 30px 0 rgba(255, 255, 255, 0.78),
-    min(70vw, 560px) 21px 0 rgba(255, 255, 255, 0.78);
+    14px -9px 0 var(--voxel-cloud-tone),
+    38px 0 0 var(--voxel-cloud-tone),
+    min(66vw, 520px) 30px 0 var(--voxel-cloud-soft-tone),
+    min(70vw, 560px) 21px 0 var(--voxel-cloud-soft-tone);
 }
 
 .voxel-landscape::after {
@@ -445,8 +701,12 @@ h1 {
 }
 
 [data-theme="dark"] .voxel-landscape {
-  background:
-    linear-gradient(180deg, #17384e 0 64%, #458d3b 64% 70%, #246433 70% 76%, #694326 76% 100%);
+  --voxel-sky-tone: #17384e;
+  --voxel-grass-tone: #458d3b;
+  --voxel-forest-tone: #246433;
+  --voxel-dirt-tone: #694326;
+  --voxel-cloud-tone: rgba(205, 226, 237, 0.6);
+  --voxel-cloud-soft-tone: rgba(174, 207, 223, 0.38);
 }
 
 .grass-block {
@@ -668,6 +928,10 @@ h1 {
     right: 10px;
     bottom: 10px;
   }
+
+  .falling-voxel-block:nth-child(n + 8) {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -682,5 +946,16 @@ h1 {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .falling-voxel-field,
+  .pixel-burst-particle {
+    display: none !important;
+  }
+
+  .voxel-name-piece {
+    opacity: 1;
+    animation: none !important;
+    transform: none !important;
   }
 }

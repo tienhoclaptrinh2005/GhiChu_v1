@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+import { PixelBurstLink } from "@/components/effects/pixel-burst-link";
 import { NoteCard } from "@/components/public/note-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
@@ -69,8 +70,7 @@ function LinkButtons({ block }: { block: PageBlock }) {
   return (
     <section aria-labelledby={`links-${block.id}`}>
       <div className="mb-5 text-center">
-        <p className="retro-label justify-center">Điểm đến nhanh</p>
-        <h2 id={`links-${block.id}`} className="voxel-title mt-3 text-2xl text-ink sm:text-3xl">
+        <h2 id={`links-${block.id}`} className="voxel-title text-2xl text-ink sm:text-3xl">
           {block.name}
         </h2>
       </div>
@@ -118,20 +118,16 @@ function LinkButtons({ block }: { block: PageBlock }) {
           const className =
             "voxel-link group grid min-h-[5.5rem] grid-cols-[7px_3rem_minmax(0,1fr)_3rem] items-center gap-3 rounded-sm border-[3px] border-line bg-surface pr-3 shadow-[5px_5px_0_var(--ds-shadow),inset_0_-4px_0_color-mix(in_srgb,var(--ds-sky)_14%,transparent)] transition-[transform,box-shadow,background-color] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-surface-alt hover:shadow-[7px_7px_0_var(--ds-shadow)] sm:grid-cols-[7px_3.5rem_minmax(0,1fr)_3.5rem] sm:pr-4";
 
-          return external ? (
-            <a
+          return (
+            <PixelBurstLink
               key={`${title}-${index}`}
               href={href}
-              target={newTab ? "_blank" : undefined}
-              rel={newTab ? "noreferrer" : undefined}
+              external={external}
+              newTab={newTab}
               className={className}
             >
               {content}
-            </a>
-          ) : (
-            <Link key={`${title}-${index}`} href={href} className={className}>
-              {content}
-            </Link>
+            </PixelBurstLink>
           );
         })}
       </div>
