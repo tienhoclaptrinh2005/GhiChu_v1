@@ -167,6 +167,45 @@ export type Database = {
         Update: BaseUpdate & Partial<Omit<Database["public"]["Tables"]["notes"]["Insert"], "id">>;
         Relationships: [];
       };
+      note_view_stats: {
+        Row: {
+          note_id: string;
+          view_count: number;
+          created_at: string;
+        };
+        Insert: {
+          note_id: string;
+          view_count?: number;
+          created_at?: string;
+        };
+        Update: {
+          note_id?: string;
+          view_count?: number;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      note_view_visitors: {
+        Row: {
+          note_id: string;
+          visitor_hash: string;
+          last_counted_at: string;
+          created_at: string;
+        };
+        Insert: {
+          note_id: string;
+          visitor_hash: string;
+          last_counted_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          note_id?: string;
+          visitor_hash?: string;
+          last_counted_at?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       note_versions: {
         Row: {
           id: string;
@@ -343,6 +382,10 @@ export type Database = {
       restore_note: {
         Args: { p_note_id: string };
         Returns: Database["public"]["Tables"]["notes"]["Row"];
+      };
+      register_note_view: {
+        Args: { p_note_id: string; p_visitor_hash: string };
+        Returns: number;
       };
     };
     Enums: {

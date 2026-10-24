@@ -62,6 +62,7 @@ export const demoNotes: NoteSummary[] = [
     publishedAt: "2026-10-12T08:00:00.000Z",
     updatedAt: "2026-10-12T08:00:00.000Z",
     readingTimeMinutes: 6,
+    viewCount: 128,
     categories: [demoCategories[0]],
   },
   {
@@ -75,6 +76,7 @@ export const demoNotes: NoteSummary[] = [
     publishedAt: "2026-10-08T08:00:00.000Z",
     updatedAt: "2026-10-10T08:00:00.000Z",
     readingTimeMinutes: 8,
+    viewCount: 94,
     categories: [demoCategories[1]],
   },
   {
@@ -88,6 +90,7 @@ export const demoNotes: NoteSummary[] = [
     publishedAt: "2026-10-02T08:00:00.000Z",
     updatedAt: "2026-10-02T08:00:00.000Z",
     readingTimeMinutes: 4,
+    viewCount: 63,
     categories: [demoCategories[2]],
   },
   {
@@ -101,6 +104,7 @@ export const demoNotes: NoteSummary[] = [
     publishedAt: "2026-09-25T08:00:00.000Z",
     updatedAt: "2026-09-28T08:00:00.000Z",
     readingTimeMinutes: 7,
+    viewCount: 51,
     categories: [demoCategories[0]],
   },
 ];

@@ -1,8 +1,8 @@
-import { ArrowUpRight, Clock3, Pin } from "lucide-react";
+import { ArrowUpRight, Clock3, Eye, Pin } from "lucide-react";
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatNumber } from "@/lib/utils";
 import type { NoteSummary } from "@/types/domain";
 
 export function NoteCard({ note, compact = false }: { note: NoteSummary; compact?: boolean }) {
@@ -32,12 +32,18 @@ export function NoteCard({ note, compact = false }: { note: NoteSummary; compact
       {!compact && (
         <p className="mt-2 line-clamp-3 text-sm leading-6 text-muted">{note.excerpt}</p>
       )}
-      <div className="mt-auto flex items-center justify-between gap-3 border-t-2 border-dashed border-line/30 pt-4 text-xs font-semibold text-muted">
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t-2 border-dashed border-line/30 pt-4 text-xs font-semibold text-muted">
         <span>{formatDate(note.publishedAt)}</span>
-        <span className="flex items-center gap-1.5">
-          <Clock3 className="size-3.5" aria-hidden="true" />
-          {note.readingTimeMinutes} phút
-          <ArrowUpRight className="ml-1 size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        <span className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1 tabular-nums">
+          <span className="inline-flex items-center gap-1.5">
+            <Eye className="size-3.5" aria-hidden="true" />
+            {formatNumber(note.viewCount)} lượt xem
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Clock3 className="size-3.5" aria-hidden="true" />
+            {note.readingTimeMinutes} phút
+            <ArrowUpRight className="ml-1 size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+          </span>
         </span>
       </div>
     </article>

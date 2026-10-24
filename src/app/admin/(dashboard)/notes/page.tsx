@@ -22,7 +22,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { getAdminNotes } from "@/features/admin/queries";
-import { cn, formatDate } from "@/lib/utils";
+import { cn, formatDate, formatNumber } from "@/lib/utils";
 import type { NoteStatus } from "@/types/domain";
 
 const statuses: Array<{ value: NoteStatus | "ALL"; label: string }> = [
@@ -209,6 +209,10 @@ export default async function AdminNotesPage({
                         Cập nhật {formatDate(note.updatedAt)}
                       </span>
                       <span>{note.readingTimeMinutes} phút đọc</span>
+                      <span className="inline-flex items-center gap-1.5 tabular-nums">
+                        <Eye className="size-3.5" aria-hidden="true" />
+                        {formatNumber(note.viewCount)} lượt xem
+                      </span>
                       {note.deletedAt ? (
                         <span>Chuyển vào thùng rác {formatDate(note.deletedAt)}</span>
                       ) : null}

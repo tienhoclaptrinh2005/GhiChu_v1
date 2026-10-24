@@ -114,6 +114,7 @@ export interface NoteSummary {
   publishedAt: string | null;
   updatedAt: string;
   readingTimeMinutes: number;
+  viewCount: number;
   categories: CategorySummary[];
 }
 
@@ -127,6 +128,7 @@ export interface AdminNoteListItem {
   publishedAt: string | null;
   updatedAt: string;
   readingTimeMinutes: number;
+  viewCount: number;
   deletedAt: string | null;
 }
 

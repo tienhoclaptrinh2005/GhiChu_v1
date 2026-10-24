@@ -65,6 +65,34 @@ async function getCategoryMap(noteIds: string[]) {
   return result;
 }
 
+function isViewStatsUnavailable(error: { code?: string }) {
+  return error.code === "PGRST205" || error.code === "42P01";
+}
+
+async function getViewCountMap(noteIds: string[]) {
+  const result = new Map<string, number>();
+  noteIds.forEach((id) => result.set(id, 0));
+  if (noteIds.length === 0) return result;
+
+  const supabase = createPublicSupabaseClient();
+  const { data, error } = await supabase
+    .from("note_view_stats")
+    .select("note_id, view_count")
+    .in("note_id", noteIds);
+
+  // Keeps a rolling deploy readable until the database migration is applied.
+  if (error) {
+    if (isViewStatsUnavailable(error)) return result;
+    throw error;
+  }
+
+  for (const item of data ?? []) {
+    result.set(item.note_id, Number(item.view_count) || 0);
+  }
+
+  return result;
+}
+
 async function loadPublishedNotes(limit = 24): Promise<NoteSummary[]> {
   if (!isSupabaseConfigured()) return demoNotes.slice(0, limit);
 
@@ -82,7 +110,11 @@ async function loadPublishedNotes(limit = 24): Promise<NoteSummary[]> {
 
   if (error) throw error;
 
-  const categoriesByNote = await getCategoryMap((data ?? []).map((note) => note.id));
+  const noteIds = (data ?? []).map((note) => note.id);
+  const [categoriesByNote, viewCountsByNote] = await Promise.all([
+    getCategoryMap(noteIds),
+    getViewCountMap(noteIds),
+  ]);
 
   return (data ?? []).map((note) => ({
     id: note.id,
@@ -94,6 +126,7 @@ async function loadPublishedNotes(limit = 24): Promise<NoteSummary[]> {
     publishedAt: note.published_at,
     updatedAt: note.updated_at,
     readingTimeMinutes: note.reading_time_minutes,
+    viewCount: viewCountsByNote.get(note.id) ?? 0,
     categories: categoriesByNote.get(note.id) ?? [],
   }));
 }
@@ -134,7 +167,11 @@ async function loadPinnedPublishedNotes(limit = 4): Promise<NoteSummary[]> {
 
   if (error) throw error;
 
-  const categoriesByNote = await getCategoryMap((data ?? []).map((note) => note.id));
+  const noteIds = (data ?? []).map((note) => note.id);
+  const [categoriesByNote, viewCountsByNote] = await Promise.all([
+    getCategoryMap(noteIds),
+    getViewCountMap(noteIds),
+  ]);
   return (data ?? []).map((note) => ({
     id: note.id,
     title: note.title,
@@ -145,6 +182,7 @@ async function loadPinnedPublishedNotes(limit = 4): Promise<NoteSummary[]> {
     publishedAt: note.published_at,
     updatedAt: note.updated_at,
     readingTimeMinutes: note.reading_time_minutes,
+    viewCount: viewCountsByNote.get(note.id) ?? 0,
     categories: categoriesByNote.get(note.id) ?? [],
   }));
 }
@@ -182,7 +220,10 @@ async function loadPublishedNoteBySlug(slug: string): Promise<NoteDetail | null>
   if (versionError) throw versionError;
   if (!version) return null;
 
-  const categoriesByNote = await getCategoryMap([note.id]);
+  const [categoriesByNote, viewCountsByNote] = await Promise.all([
+    getCategoryMap([note.id]),
+    getViewCountMap([note.id]),
+  ]);
 
   return {
     id: note.id,
@@ -194,6 +235,7 @@ async function loadPublishedNoteBySlug(slug: string): Promise<NoteDetail | null>
     publishedAt: note.published_at,
     updatedAt: note.updated_at,
     readingTimeMinutes: note.reading_time_minutes,
+    viewCount: viewCountsByNote.get(note.id) ?? 0,
     categories: categoriesByNote.get(note.id) ?? [],
     content: asTiptapDocument(version.content),
     versionNumber: version.version_number,

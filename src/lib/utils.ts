@@ -15,6 +15,11 @@ export function formatDate(value: string | Date | null) {
   }).format(new Date(value));
 }
 
+export function formatNumber(value: number) {
+  const safeValue = Number.isFinite(value) ? Math.max(0, value) : 0;
+  return new Intl.NumberFormat("vi-VN").format(safeValue);
+}
+
 export function slugify(value: string) {
   return value
     .normalize("NFD")

@@ -3,6 +3,7 @@ import { ArrowLeft, Clock3, History } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { NoteViewCounter } from "@/components/public/note-view-counter";
 import { TiptapRenderer } from "@/components/public/tiptap-renderer";
 import { Badge } from "@/components/ui/badge";
 import { getPublishedNoteBySlug } from "@/features/notes/queries";
@@ -43,6 +44,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
             <span>Cập nhật {formatDate(note.updatedAt)}</span>
             <span className="inline-flex items-center gap-1.5"><Clock3 className="size-3.5" />{note.readingTimeMinutes} phút đọc</span>
             <span className="inline-flex items-center gap-1.5"><History className="size-3.5" />Phiên bản {note.versionNumber}</span>
+            <NoteViewCounter noteId={note.id} initialCount={note.viewCount} />
           </div>
         </header>
         <TiptapRenderer document={note.content} className="px-6 py-8 sm:px-10 sm:py-10" />

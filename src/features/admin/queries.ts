@@ -50,6 +50,10 @@ function asTiptapDocument(value: Json): TiptapNode {
   return value as unknown as TiptapNode;
 }
 
+function isViewStatsUnavailable(error: { code?: string }) {
+  return error.code === "PGRST205" || error.code === "42P01";
+}
+
 function normalizeQuickLink(item: Json, index: number): QuickLinkItem | null {
   const record = asRecord(item);
   if (typeof record.title !== "string" || typeof record.href !== "string") return null;
@@ -171,6 +175,23 @@ export async function getAdminNotes({
   const { data, error } = await request;
   if (error) throw new Error("Không thể tìm kiếm ghi chú trong trang quản trị.");
 
+  const viewCountsByNote = new Map<string, number>();
+  const noteIds = (data ?? []).map((note) => note.id);
+  if (noteIds.length > 0) {
+    const statsResult = await supabase
+      .from("note_view_stats")
+      .select("note_id, view_count")
+      .in("note_id", noteIds);
+
+    if (statsResult.error && !isViewStatsUnavailable(statsResult.error)) {
+      throw new Error("Không thể tải lượt xem của ghi chú.");
+    }
+
+    for (const stat of statsResult.data ?? []) {
+      viewCountsByNote.set(stat.note_id, Number(stat.view_count) || 0);
+    }
+  }
+
   return (data ?? []).map((note) => ({
     id: note.id,
     title: note.title,
@@ -181,6 +202,7 @@ export async function getAdminNotes({
     publishedAt: note.published_at,
     updatedAt: note.updated_at,
     readingTimeMinutes: note.reading_time_minutes,
+    viewCount: viewCountsByNote.get(note.id) ?? 0,
     deletedAt: note.deleted_at,
   }));
 }
