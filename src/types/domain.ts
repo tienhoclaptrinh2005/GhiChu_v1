@@ -127,6 +127,77 @@ export interface AdminNoteListItem {
   publishedAt: string | null;
   updatedAt: string;
   readingTimeMinutes: number;
+  deletedAt: string | null;
+}
+
+export interface AdminCategoryItem {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  color: string;
+  parentId: string | null;
+  parentName: string | null;
+  position: number;
+  isActive: boolean;
+  noteCount: number;
+  childCount: number;
+}
+
+export interface AdminNoteCategoryOption {
+  id: string;
+  name: string;
+  slug: string;
+  color: string;
+}
+
+export interface AdminNoteParentOption {
+  id: string;
+  title: string;
+  status: NoteStatus;
+}
+
+export interface AdminNoteEditorValue {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  status: NoteStatus;
+  isPinned: boolean;
+  parentId: string | null;
+  categoryIds: string[];
+  content: TiptapNode;
+  versionNumber: number;
+  seoTitle: string;
+  seoDescription: string;
+  publishedAt: string | null;
+}
+
+export interface AdminNoteEditorData {
+  note: AdminNoteEditorValue | null;
+  categories: AdminNoteCategoryOption[];
+  parentNotes: AdminNoteParentOption[];
+}
+
+export interface AdminNoteVersionItem {
+  id: string;
+  versionNumber: number;
+  title: string;
+  plainText: string;
+  changeSummary: string | null;
+  createdAt: string;
+  isCurrent: boolean;
+  isPublished: boolean;
+}
+
+export interface AdminNoteHistoryData {
+  note: {
+    id: string;
+    title: string;
+    slug: string;
+    status: NoteStatus;
+  };
+  versions: AdminNoteVersionItem[];
 }
 
 export interface TiptapMark {

@@ -7,11 +7,16 @@ import {
   Plus,
   Search,
   SearchX,
+  Trash2,
   X,
 } from "lucide-react";
 import Link from "next/link";
 
 import { PageHeader } from "@/components/admin/page-header";
+import {
+  DeleteNoteButton,
+  RestoreNoteButton,
+} from "@/components/admin/note-trash-actions";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -38,6 +43,10 @@ function normalizeStatus(value: string): NoteStatus | "ALL" {
     : "ALL";
 }
 
+function normalizeScope(value: string): "active" | "trash" {
+  return value === "trash" ? "trash" : "active";
+}
+
 function statusTone(status: NoteStatus) {
   if (status === "PUBLIC") return "green" as const;
   if (status === "DRAFT") return "amber" as const;
@@ -57,14 +66,16 @@ export default async function AdminNotesPage({
   const params = await searchParams;
   const query = firstValue(params.q).trim().slice(0, 100);
   const status = normalizeStatus(firstValue(params.status));
-  const notes = await getAdminNotes({ query, status });
+  const scope = normalizeScope(firstValue(params.scope));
+  const notes = await getAdminNotes({ query, status, scope });
   const hasFilters = Boolean(query) || status !== "ALL";
+  const clearFiltersHref = scope === "trash" ? "/admin/notes?scope=trash" : "/admin/notes";
 
   return (
     <div className="space-y-7">
       <PageHeader
         title="Quản lý ghi chú"
-        description="Tìm theo tiêu đề hoặc mô tả, lọc trạng thái và kiểm tra nhanh nội dung đang công khai."
+        description="Tìm kiếm, chỉnh sửa trạng thái và khôi phục an toàn các ghi chú đã chuyển vào thùng rác."
         action={(
           <Link href="/admin/notes/new" className={buttonVariants({ variant: "accent" })}>
             <Plus className="size-4" aria-hidden="true" />
@@ -73,9 +84,29 @@ export default async function AdminNotesPage({
         )}
       />
 
+      <div className="flex flex-wrap gap-3" aria-label="Phạm vi ghi chú">
+        <Link
+          href="/admin/notes"
+          className={buttonVariants({ variant: scope === "active" ? "accent" : "outline" })}
+          aria-current={scope === "active" ? "page" : undefined}
+        >
+          <FileText className="size-4" aria-hidden="true" />
+          Đang sử dụng
+        </Link>
+        <Link
+          href="/admin/notes?scope=trash"
+          className={buttonVariants({ variant: scope === "trash" ? "accent" : "outline" })}
+          aria-current={scope === "trash" ? "page" : undefined}
+        >
+          <Trash2 className="size-4" aria-hidden="true" />
+          Thùng rác
+        </Link>
+      </div>
+
       <Card>
         <CardContent>
           <form method="get" className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_14rem_auto] lg:items-end">
+            {scope === "trash" ? <input type="hidden" name="scope" value="trash" /> : null}
             <label className="text-sm font-bold text-ink" htmlFor="admin-note-search">
               Tìm kiếm ghi chú
               <span className="relative mt-2 block">
@@ -118,7 +149,7 @@ export default async function AdminNotesPage({
               </button>
               {hasFilters ? (
                 <Link
-                  href="/admin/notes"
+                  href={clearFiltersHref}
                   className={buttonVariants({ variant: "ghost", size: "icon" })}
                   aria-label="Xóa bộ lọc"
                   title="Xóa bộ lọc"
@@ -136,11 +167,13 @@ export default async function AdminNotesPage({
           <div>
             <p className="retro-label">Kết quả</p>
             <h2 id="admin-notes-results" className="mt-3 font-display text-xl font-bold text-ink">
-              {notes.length} ghi chú
+              {notes.length} {scope === "trash" ? "ghi chú trong thùng rác" : "ghi chú"}
             </h2>
           </div>
           <p className="max-w-md text-right text-xs leading-5 text-muted">
-            Khách truy cập chỉ đọc được ghi chú có trạng thái Công khai và phiên bản đã xuất bản.
+            {scope === "trash"
+              ? "Ghi chú trong thùng rác không xuất hiện công khai và vẫn giữ toàn bộ lịch sử phiên bản."
+              : "Khách truy cập chỉ đọc được ghi chú có trạng thái Công khai và phiên bản đã xuất bản."}
           </p>
         </div>
 
@@ -158,6 +191,7 @@ export default async function AdminNotesPage({
                         {note.title}
                       </h3>
                       <Badge tone={statusTone(note.status)}>{statusLabel(note.status)}</Badge>
+                      {scope === "trash" ? <Badge tone="rose">Đã xóa mềm</Badge> : null}
                       {note.isPinned ? (
                         <Badge tone="amber">
                           <Pin className="size-3" aria-hidden="true" />
@@ -175,25 +209,35 @@ export default async function AdminNotesPage({
                         Cập nhật {formatDate(note.updatedAt)}
                       </span>
                       <span>{note.readingTimeMinutes} phút đọc</span>
+                      {note.deletedAt ? (
+                        <span>Chuyển vào thùng rác {formatDate(note.deletedAt)}</span>
+                      ) : null}
                     </div>
                   </div>
                   <div className="flex shrink-0 flex-wrap gap-2 sm:flex-col">
-                    <Link
-                      href={`/admin/notes/${note.id}/edit`}
-                      className={buttonVariants({ variant: "outline", size: "sm" })}
-                    >
-                      <Pencil className="size-4" aria-hidden="true" />
-                      Sửa
-                    </Link>
-                    {note.status === "PUBLIC" ? (
-                      <Link
-                        href={`/notes/${note.slug}`}
-                        className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
-                      >
-                        <Eye className="size-4" aria-hidden="true" />
-                        Xem ngoài
-                      </Link>
-                    ) : null}
+                    {scope === "trash" ? (
+                      <RestoreNoteButton noteId={note.id} noteTitle={note.title} />
+                    ) : (
+                      <>
+                        <Link
+                          href={`/admin/notes/${note.id}/edit`}
+                          className={buttonVariants({ variant: "outline", size: "sm" })}
+                        >
+                          <Pencil className="size-4" aria-hidden="true" />
+                          Sửa
+                        </Link>
+                        {note.status === "PUBLIC" ? (
+                          <Link
+                            href={`/notes/${note.slug}`}
+                            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+                          >
+                            <Eye className="size-4" aria-hidden="true" />
+                            Xem ngoài
+                          </Link>
+                        ) : null}
+                        <DeleteNoteButton noteId={note.id} noteTitle={note.title} />
+                      </>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -203,14 +247,16 @@ export default async function AdminNotesPage({
           <div className="empty-state px-5 py-12 text-center">
             <SearchX className="mx-auto size-9 text-forest" aria-hidden="true" />
             <h3 className="mt-4 font-display text-base font-bold text-ink">
-              Không tìm thấy ghi chú phù hợp
+              {scope === "trash" ? "Thùng rác đang trống" : "Không tìm thấy ghi chú phù hợp"}
             </h3>
             <p className="mt-2 text-sm text-muted">
-              Hãy thử từ khóa ngắn hơn hoặc chọn trạng thái khác.
+              {scope === "trash"
+                ? "Các ghi chú bạn xóa mềm sẽ xuất hiện tại đây để có thể khôi phục."
+                : "Hãy thử từ khóa ngắn hơn hoặc chọn trạng thái khác."}
             </p>
             {hasFilters ? (
               <Link
-                href="/admin/notes"
+                href={clearFiltersHref}
                 className={cn(buttonVariants({ variant: "outline", size: "sm" }), "mt-5")}
               >
                 Xóa bộ lọc

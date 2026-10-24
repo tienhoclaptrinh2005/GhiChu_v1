@@ -27,7 +27,7 @@ const themeScript = `(function(){try{var k="ghichu-theme";var s=localStorage.get
 const baseMetadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "NoteSpace — Personal Notes & Link Hub",
+    default: "VMT SHOP - NoteSpace",
     template: "%s · NoteSpace",
   },
   description:
@@ -38,7 +38,8 @@ const baseMetadata: Metadata = {
     type: "website",
     locale: "vi_VN",
     title: "NoteSpace — Personal Notes & Link Hub",
-    description: "Ghi chú, tài nguyên và liên kết hữu ích trong một không gian gọn gàng.",
+    description:
+      "Ghi chú, tài nguyên và liên kết hữu ích trong một không gian gọn gàng.",
     url: siteUrl,
   },
 };
@@ -73,7 +74,9 @@ export const viewport: Viewport = {
   themeColor: "#247db8",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="vi"
@@ -85,9 +88,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="font-sans">
-        <a href="#main-content" className="skip-link">Bỏ qua đến nội dung</a>
+        <a href="#main-content" className="skip-link">
+          Bỏ qua đến nội dung
+        </a>
         {children}
-        <Toaster richColors position="top-right" toastOptions={{ className: "retro-toast" }} />
+        <Toaster
+          richColors
+          position="top-right"
+          toastOptions={{ className: "retro-toast" }}
+        />
       </body>
     </html>
   );

@@ -296,6 +296,54 @@ export type Database = {
     Functions: {
       is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
       media_reference_count: { Args: { p_media_id: string }; Returns: number };
+      publish_note: {
+        Args: { p_note_id: string; p_version_id: string };
+        Returns: Database["public"]["Tables"]["notes"]["Row"];
+      };
+      save_note: {
+        Args: {
+          p_note_id: string | null;
+          p_title: string;
+          p_slug: string;
+          p_excerpt: string;
+          p_status: Database["public"]["Enums"]["note_status"];
+          p_is_pinned: boolean;
+          p_parent_id: string | null;
+          p_category_ids: string[];
+          p_content: Json;
+          p_plain_text: string;
+          p_change_summary: string;
+          p_seo_title: string | null;
+          p_seo_description: string | null;
+          p_reading_time_minutes: number;
+        };
+        Returns: Database["public"]["Tables"]["notes"]["Row"];
+      };
+      save_category: {
+        Args: {
+          p_category_id: string | null;
+          p_name: string;
+          p_slug: string;
+          p_description: string;
+          p_color: string;
+          p_parent_id: string | null;
+          p_position: number;
+          p_is_active: boolean;
+        };
+        Returns: Database["public"]["Tables"]["categories"]["Row"];
+      };
+      delete_category: {
+        Args: { p_category_id: string };
+        Returns: Database["public"]["Tables"]["categories"]["Row"];
+      };
+      soft_delete_note: {
+        Args: { p_note_id: string };
+        Returns: Database["public"]["Tables"]["notes"]["Row"];
+      };
+      restore_note: {
+        Args: { p_note_id: string };
+        Returns: Database["public"]["Tables"]["notes"]["Row"];
+      };
     };
     Enums: {
       user_role: "ADMIN";
